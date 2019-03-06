@@ -1,0 +1,6 @@
+#!/bin/bash
+
+dossier="Sprint$1"
+grammar="Grammar$1.g4"
+
+antlr4 -visitor -no-listener -Dlanguage=Cpp -o $dossier  $dossier/$grammar

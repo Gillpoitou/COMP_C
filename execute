@@ -1,0 +1,5 @@
+#!/bin/bash
+
+dossier="Sprint$1"
+
+$dossier/exe

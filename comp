@@ -1,0 +1,5 @@
+#!/bin/bash
+
+dossier="Sprint$1"
+
+clang++ -g -std=c++11 -I antlr4-cpp-runtime-4/antlr4-runtime/ -o $dossier/exe $dossier/$dossier/*.cpp antlr4-cpp-runtime-4/lib/libantlr4-runtime.a
