@@ -11,15 +11,32 @@
 using namespace antlr4;
 using namespace std;
 
-int main(int, const char **)
+int main(int argc, char *argv[])
 {
-      ANTLRInputStream input("int main() {return 43;}");
-      Sprint1Lexer lexer(&input);
-      CommonTokenStream tokens(&lexer);
-      Sprint1Parser parser(&tokens);
-      tree::ParseTree *tree = parser.prog();
-      Visitor visitor;
-      int resultat = (int)visitor.visit(tree);
-      cout << "Résultat " << resultat << endl;
+      string content = "";
+      string line;
+      ifstream myfile(argv[1]);
+      if (myfile.is_open())
+      {
+            cout << "FILE" << endl;
+            while (getline(myfile, line))
+            {
+                  content += line + '\n';
+            }
+            myfile.close();
+
+            ANTLRInputStream input(content);
+            Sprint1Lexer lexer(&input);
+            CommonTokenStream tokens(&lexer);
+            Sprint1Parser parser(&tokens);
+            tree::ParseTree *tree = parser.prog();
+            Visitor visitor;
+            int resultat = (int)visitor.visit(tree);
+            cout << "Résultat " << resultat << endl;
+      }
+
+      else
+            cout << "Unable to open file" << endl;
+
       return 0;
 }
