@@ -1,6 +1,6 @@
 grammar Grammar2;
 prog: main;
-main: tname 'main' '(' ')' '{' body ')';
+main: tname 'main' '(' ')' '{' body '}';
 tname: 'int';
 body: stats rstat;
 rstat: 'return' INT ';' # retInt
