@@ -18,7 +18,6 @@ int main(int argc, char *argv[])
       ifstream myfile(argv[1]);
       if (myfile.is_open())
       {
-            cout << "FILE" << endl;
             while (getline(myfile, line))
             {
                   content += line + '\n';
