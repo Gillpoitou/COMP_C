@@ -1,9 +1,9 @@
 #include <iostream>
 #include "antlr4-runtime.h"
-#include "Sprint1Lexer.h"
+#include "Grammar1Lexer.h"
 
-#include "Sprint1Parser.h"
-#include "Sprint1BaseVisitor.h"
+#include "Grammar1Parser.h"
+#include "Grammar1BaseVisitor.h"
 #include "Visitor.h"
 
 #include <iostream>
@@ -25,9 +25,9 @@ int main(int argc, char *argv[])
             myfile.close();
 
             ANTLRInputStream input(content);
-            Sprint1Lexer lexer(&input);
+            Grammar1Lexer lexer(&input);
             CommonTokenStream tokens(&lexer);
-            Sprint1Parser parser(&tokens);
+            Grammar1Parser parser(&tokens);
             tree::ParseTree *tree = parser.prog();
             Visitor visitor;
             int resultat = (int)visitor.visit(tree);

@@ -1,4 +1,4 @@
-grammar Sprint1;
+grammar Grammar1;
 prog: main;
 main: tname 'main' '(' ')' '{' body '}';
 tname: 'int';

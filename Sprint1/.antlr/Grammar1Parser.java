@@ -1,4 +1,4 @@
-// Generated from /home/gillpoitou/Documents/COMP_C/COMP_C/Sprint1/Sprint1.g4 by ANTLR 4.7.1
+// Generated from /home/gillpoitou/Documents/COMP_C/COMP_C/Sprint1/Grammar1.g4 by ANTLR 4.7.1
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
@@ -9,7 +9,7 @@ import java.util.Iterator;
 import java.util.ArrayList;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
-public class Sprint1Parser extends Parser {
+public class Grammar1Parser extends Parser {
 	static { RuntimeMetaData.checkVersion("4.7.1", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
@@ -64,7 +64,7 @@ public class Sprint1Parser extends Parser {
 	}
 
 	@Override
-	public String getGrammarFileName() { return "Sprint1.g4"; }
+	public String getGrammarFileName() { return "Grammar1.g4"; }
 
 	@Override
 	public String[] getRuleNames() { return ruleNames; }
@@ -75,7 +75,7 @@ public class Sprint1Parser extends Parser {
 	@Override
 	public ATN getATN() { return _ATN; }
 
-	public Sprint1Parser(TokenStream input) {
+	public Grammar1Parser(TokenStream input) {
 		super(input);
 		_interp = new ParserATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}
@@ -185,7 +185,7 @@ public class Sprint1Parser extends Parser {
 	}
 
 	public static class BodyContext extends ParserRuleContext {
-		public TerminalNode INT() { return getToken(Sprint1Parser.INT, 0); }
+		public TerminalNode INT() { return getToken(Grammar1Parser.INT, 0); }
 		public BodyContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}

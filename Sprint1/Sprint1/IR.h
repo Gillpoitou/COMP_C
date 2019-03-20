@@ -2,13 +2,15 @@
 #define IR_H
 
 #include <vector>
+#include <map>
 #include <string>
 #include <iostream>
 #include <initializer_list>
 
+using namespace std;
 // Declarations from the parser -- replace with your own
-#include "type.h"
-#include "symbole.h"
+#include "Type.h"
+//#include "symbole.h"
 class BasicBlock;
 class CFG;
 class DefFonction;
@@ -46,10 +48,6 @@ class IRInstr {
 	vector<string> params; /**< For 3-op instrs: d, x, y; for ldconst: d, c;  For call: label, d, params;  for wmem and rmem: choose yourself */
 	// if you subclass IRInstr, each IRInstr subclass has its parameters and the previous (very important) comment becomes useless: it would be a better design. 
 };
-
-
-
-
 
 
 /**  The class for a basic block */
