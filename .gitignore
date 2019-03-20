@@ -7,7 +7,7 @@ Expr*
 Grammar[0-9]*
 Grammar1[0-9]*
 
-.antlr/*
+*/.antlr
 
 !*.g4
 
