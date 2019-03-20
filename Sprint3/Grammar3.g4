@@ -2,7 +2,7 @@ grammar Grammar3;
 prog: main;
 main: tname 'main' '(' ')' '{' body '}';
 tname: 'int';
-body: declaration stat* rstat;
+body: declaration* stat* rstat;
 declaration: tname ID ';'
     | tname ID '=' expr ';';
 rstat: 'return' INT ';' # retInt
