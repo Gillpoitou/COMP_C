@@ -2,4 +2,12 @@ exe
 
 exe.DSYM
 
-antlr4-cpp-runtime-4
+Expr*
+
+Grammar[0-9][0-9]*
+
+.antlr/*
+
+!*.g4
+
+!*.txt
