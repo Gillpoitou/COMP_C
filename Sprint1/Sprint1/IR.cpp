@@ -111,8 +111,8 @@ string CFG::IR_reg_to_asm(string reg){
 
 void CFG::gen_asm_prologue(ostream& o){
       int N;
-      for(Type t : SymbolType.begin){
-            N += t.size;
+      for(map<string,Type>::iterator itr = SymbolType.begin(), itr_end = SymbolType.end(); itr != itr_end ; itr++){
+            N += itr->second.size;
       }
 
       o << "enter " << N << ", 0" << endl;
