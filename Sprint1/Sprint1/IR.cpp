@@ -105,16 +105,22 @@ void CFG::gen_asm(ostream& o){
 }
 
 string CFG::IR_reg_to_asm(string reg){
-      //TODO
-      return "";
+      string regNb = reg.substr(4);
+      return "-"+ regNb + "(%rbp)";
 }
 
 void CFG::gen_asm_prologue(ostream& o){
-      //TODO
+      int N;
+      for(Type t : SymbolType.begin){
+            N += t.size;
+      }
+
+      o << "enter " << N << ", 0" << endl;
 }
 
 void CFG::gen_asm_epilogue(ostream& o){
-      //TODO
+      o << "leave" << endl;
+      o << "ret" << endl;
 }
 
 void CFG::add_to_symbol_table(string name, Type t){
