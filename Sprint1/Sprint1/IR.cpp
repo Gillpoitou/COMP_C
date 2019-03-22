@@ -1,6 +1,5 @@
 #include "IR.h"
 
-
 //------------IRInstr
 IRInstr::IRInstr(BasicBlock* bb_, Operation op, Type t, vector<string> params){
     this->bb = bb_;
@@ -66,4 +65,46 @@ void BasicBlock::add_IRInstr(IRInstr::Operation op, Type t, vector<string> param
       instrs.push_back(new IRInstr(this,op,t,params));
 }
 
+CFG::CFG(DefFonction* ast){
+      this->ast = ast;
+}
 
+void CFG::add_bb(BasicBlock* bb){
+      bbs.push_back(bb);
+}
+
+void CFG::gen_asm(ostream& o){
+      for(BasicBlock* cbb : bbs){
+            cbb->gen_asm(o);
+      }
+}
+
+string CFG::IR_reg_to_asm(string reg){
+      //TODO
+      return "";
+}
+
+void CFG::gen_asm_prologue(ostream& o){
+      //TODO
+}
+
+void CFG::gen_asm_epilogue(ostream& o){
+      //TODO
+}
+
+void CFG::add_to_symbol_table(string name, Type t){
+      SymbolType.insert(pair<string,Type>(name,t));
+}
+
+string CFG::create_new_tempvar(Type t){
+      //TODO
+      return "";
+}
+
+int CFG::get_var_index(string name){
+      return SymbolIndex.at(name);
+}
+
+Type CFG::get_var_type(string name){
+      return SymbolType.at(name);
+}
