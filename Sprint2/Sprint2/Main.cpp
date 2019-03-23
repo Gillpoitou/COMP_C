@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
             }
             myfile.close();
 
-            // cout << "1" << endl;
+            //cout << "1" << endl;
             ANTLRInputStream input(content);
             Grammar2Lexer lexer(&input);
             CommonTokenStream tokens(&lexer);
@@ -34,9 +34,9 @@ int main(int argc, char *argv[])
             tree::ParseTree *tree = parser.prog();
             cout << tree->toStringTree() << endl;
             Visitor visitor;
-            // cout << "2" << endl;
+            //cout << "2" << endl;
             Function *result = (Function *)visitor.visit(tree);
-            // cout << "3" << endl;
+            //cout << "3" << endl;
             cout << result->toString() << endl;
             // int resultat = (int)visitor.visit(tree);
             // cout << "Résultat " << resultat << endl;

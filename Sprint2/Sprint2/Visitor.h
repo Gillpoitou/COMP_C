@@ -14,23 +14,23 @@ class Visitor : public Grammar2BaseVisitor
     public:
       virtual antlrcpp::Any visitProg(Grammar2Parser::ProgContext *ctx) override
       {
-            // cout << "2.1" << endl;
+            //cout << "2.1" << endl;
             return visitChildren(ctx);
       }
 
       virtual antlrcpp::Any visitMain(Grammar2Parser::MainContext *ctx) override
       {
-            // cout << "2.2" << endl;
+            //cout << "2.2" << endl;
 
             Declaration *decl;
 
-            vector<Declaration *> *declList;
+            vector<Declaration *> *declList = new vector<Declaration *>(0);
 
             for (int i = 0; i < ctx->declaration().size(); i++)
             {
-                  // cout << "2.2.1" << endl;
-                  decl = (Declaration *)visitChildren(ctx->declaration(i));
-                  // cout << "2.2.2" << endl;
+                  //cout << "2.2.1" << endl;
+                  decl = (Declaration *)visit(ctx->declaration(i));
+                  //cout << "2.2.2" << endl;
                   this->declarations.insert(pair<string, Declaration *>(decl->left->name, decl));
                   declList->push_back(decl);
             }
@@ -40,7 +40,7 @@ class Visitor : public Grammar2BaseVisitor
 
       virtual antlrcpp::Any visitDecl(Grammar2Parser::DeclContext *ctx) override
       {
-            // cout << "2.3" << endl;
+            //cout << "2.3" << endl;
 
             ExpressionVar *var = new ExpressionVar(ctx->ID()->getText().c_str());
 
@@ -51,7 +51,7 @@ class Visitor : public Grammar2BaseVisitor
       virtual antlrcpp::Any visitInitVar(Grammar2Parser::InitVarContext *ctx) override
       {
 
-            // cout << "2.4" << endl;
+            //cout << "2.4" << endl;
 
             // cout << "initVar" << endl;
             ExpressionVar *right;
@@ -78,7 +78,7 @@ class Visitor : public Grammar2BaseVisitor
 
       virtual antlrcpp::Any visitInitCst(Grammar2Parser::InitCstContext *ctx) override
       {
-            // cout << "2.5" << endl;
+            //cout << "2.5" << endl;
 
             ExpressionConst *val = new ExpressionConst(stoi(ctx->INT()->getText()));
             ExpressionVar *var = new ExpressionVar(ctx->ID()->getText().c_str(), val);

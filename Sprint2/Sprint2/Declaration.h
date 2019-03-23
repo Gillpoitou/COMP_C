@@ -10,7 +10,7 @@ class Declaration
             Declaration(ExpressionVar * left, Expression * right) : left(left), right(right){}
 
             string toString(){
-                  if(this->right != nullptr){
+                  if(this->right){
                         return "Declaration = { left : " + left->toString() + " , right : " + right->toString() + " }\n";
                   } else {
                         return "Declaration = { left : " + left->toString() + " , right : null } \n";
