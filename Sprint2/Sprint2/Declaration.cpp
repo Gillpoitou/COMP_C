@@ -15,7 +15,8 @@ void Declaration::buildASM(ostream &o, map<string,int>* symbolTable, int* lastOf
        }else if(ExpressionVar * v_right = dynamic_cast<ExpressionVar*>(right)){
 
            int reg_off_right = symbolTable->find(v_right->name)->second;
-           o << "movl $" << reg_off_right << ", -" << reg_off << "(%rbp)" << endl;
+           o << "movl -" << reg_off_right << "(%rbp), %eax" << endl;
+           o << "movl %eax, -" << reg_off << "(%rbp)" << endl;
        }
     }
 }

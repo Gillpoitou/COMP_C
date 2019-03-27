@@ -19,9 +19,9 @@ void Function::buildASM(ostream &o){
       }
 
       for(Statement* statm : *statements){
-          statm->buildASM(o);
+          statm->buildASM(o,&SymbolIndex);
       }
 
-      o << "leave" << endl;
+      o << "popq    %rbp" << endl;
       o << "ret" << endl;
 }
