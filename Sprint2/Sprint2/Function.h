@@ -23,6 +23,9 @@ class Function
 
             return result += "}\n";
       }
+      void buildASM(&ostream o){
+
+      }
 
       vector<Declaration *> *declarations;
       vector<Statement *> *statements;
