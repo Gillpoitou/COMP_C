@@ -2,7 +2,7 @@
 #include <string>
 
 #include "Declaration.h"
-#include "Satement.h"
+#include "Statement.h"
 using namespace std;
 
 class Function
