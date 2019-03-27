@@ -32,6 +32,6 @@ class Function
       vector<Declaration *> *declarations;
       vector<Statement *> *statements;
       map <string, int> SymbolIndex;
-      int lastOffset;
+      int lastOffset = 4;
 };
 
