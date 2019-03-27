@@ -1,3 +1,4 @@
+#include "string"
 using namespace std;
 
 class Expression;
@@ -12,8 +13,6 @@ class Statement {
 class StatementReturn : public Statement{
       public:
 	    StatementReturn(Expression *expr): value(expr) {}
-	    string toString(){
-            	return "Return = { value : " + value->toString() + " }\n";
-            }
+	    string toString();
             Expression *value;
 };
