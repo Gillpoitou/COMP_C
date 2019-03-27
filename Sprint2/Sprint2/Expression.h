@@ -1,6 +1,7 @@
 #include <string>
 #include <sstream>
 #include <iostream>
+#include <map>
 using namespace std;
 
 class Expression
@@ -10,7 +11,7 @@ class Expression
             return "";
       };
 
-      virtual void buildASM(ostream &o){
+      virtual void buildASM(ostream &o, map<string,int>* symbolTable, int* lastOffset){
             
       };
 };
@@ -27,7 +28,7 @@ class ExpressionConst : public Expression
             return "ExpressionConst = { value : " + ss.str() + " } \n";
       }
 
-      virtual void buildASM(ostream &o);
+      virtual void buildASM(ostream &o, map<string,int>* symbolTable, int* lastOffset);
 
       int value;
 };
@@ -58,7 +59,7 @@ class ExpressionVar : public Expression
             }
       }
 
-      virtual void buildASM(ostream &o);
+      virtual void buildASM(ostream &o, map<string,int>* symbolTable, int* lastOffset);
 
       string name;
       ExpressionConst *value;
