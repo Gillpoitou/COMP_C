@@ -1,6 +1,7 @@
 #include <vector>
 #include <string>
 
+#include <iostream>
 #include "Declaration.h"
 #include "Statement.h"
 using namespace std;
@@ -23,9 +24,7 @@ class Function
 
             return result += "}\n";
       }
-      void buildASM(&ostream o){
-
-      }
+      void buildASM(ostream &o);
 
       vector<Declaration *> *declarations;
       vector<Statement *> *statements;
