@@ -10,10 +10,6 @@ class Expression
       virtual string toString(){
             return "";
       };
-
-      virtual void buildASM(ostream &o, map<string,int>* symbolTable, int* lastOffset){
-            
-      };
 };
 
 class ExpressionConst : public Expression
@@ -27,8 +23,6 @@ class ExpressionConst : public Expression
             ss << value;
             return "ExpressionConst = { value : " + ss.str() + " } \n";
       }
-
-      virtual void buildASM(ostream &o, map<string,int>* symbolTable, int* lastOffset);
 
       int value;
 };
@@ -58,8 +52,6 @@ class ExpressionVar : public Expression
                   return "ExpressionVar = { name : " + name + " , value : null } \n";
             }
       }
-
-      virtual void buildASM(ostream &o, map<string,int>* symbolTable, int* lastOffset);
 
       string name;
       ExpressionConst *value;
