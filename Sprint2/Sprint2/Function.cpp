@@ -7,11 +7,11 @@ void Function::buildASM(ostream &o){
       o << "enter " << N  << ", 0" << endl;
 
       for(Declaration* decl : *declarations){
-        //generate ASM
+        decl->buildASM(o);
       }
 
-      for(Statement* expr : *statements){
-          //generate ASM
+      for(Statement* statm : *statements){
+          statm->buildASM(o);
       }
 
       o << "leave" << endl;
