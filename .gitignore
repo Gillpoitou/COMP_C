@@ -2,4 +2,19 @@ exe
 
 exe.DSYM
 
-antlr4-cpp-runtime-4
+Expr*
+
+Grammar[0-9]*
+Grammar1[0-9]*
+
+.vscode/
+
+*/.antlr
+
+!*.g4
+
+!*.txt
+
+!Expression.*
+
+!.vscode/settings.json
