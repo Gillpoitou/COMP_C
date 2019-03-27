@@ -20,6 +20,6 @@ class StatementReturn : public Statement{
       public:
 	    StatementReturn(Expression *expr): value(expr) {}
 	    string toString();
-      virtual void buildASM(ostream &o, const map<string,int>* symbolTable);
+      virtual void buildASM(ostream &o, map<string,int>* symbolTable);
             Expression *value;
 };

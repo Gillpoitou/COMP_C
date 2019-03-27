@@ -5,7 +5,7 @@ string StatementReturn::toString(){
             	return "Return = { value : " + value->toString() + " }\n";
 }
 
-void StatementReturn::buildASM(ostream &o, const map<string,int>* symbolTable){
+void StatementReturn::buildASM(ostream &o, map<string,int>* symbolTable){
 
 	if(value != nullptr){
 
