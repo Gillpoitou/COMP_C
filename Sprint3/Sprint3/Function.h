@@ -8,7 +8,7 @@ using namespace std;
 class Function
 {
     public:
-      Function(vector<Declaration *> *declarations, vector<Statement *> *stats) : declarations(declarations), statements(stats) {}
+      Function(vector<Declaration *> *declarations, vector<Statement *> *stats, StatementReturn *rstat) : declarations(declarations), statements(stats), rstat(rstat) {}
       string toString()
       {
             string result = "Function = { \n";
@@ -16,14 +16,15 @@ class Function
             {
                   result += ((Declaration *)*it)->toString() + "\n";
             }
-	    for (vector<Statement *>::iterator it2 = statements->begin(); it2 != statements->end(); ++it2)
+            for (vector<Statement *>::iterator it2 = statements->begin(); it2 != statements->end(); ++it2)
             {
                   result += ((Statement *)*it2)->toString() + "\n";
             }
 
-            return result += "}\n";
+            return result += "rstat : " + rstat->toString() + "}\n";
       }
 
       vector<Declaration *> *declarations;
       vector<Statement *> *statements;
+      StatementReturn *rstat;
 };

@@ -3,6 +3,10 @@ int main(){
       int bde = 4;
       int cde = abc;
       int def;
+      int ghi;
 
-      return 3;
+      def=abc;
+      ghi = (abc + bde)*4*(abc-def);
+
+      return ghi / 4;
 }

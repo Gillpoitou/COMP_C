@@ -1,6 +1,12 @@
 #include "Statement.h"
 #include "Expression.h"
 
-string StatementReturn::toString(){
-            	return "Return = { value : " + value->toString() + " }\n";
+string Statement::toString()
+{
+      return "Statement = { right : " + right->toString() + ", left : " + left->toString() + "\n";
+}
+
+string StatementReturn::toString()
+{
+      return "Return = { value : " + value->toString() + " }\n";
 }

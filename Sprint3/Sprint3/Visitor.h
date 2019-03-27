@@ -5,112 +5,128 @@
 #include <iostream>
 
 #include "antlr4-runtime.h"
-#include "Grammar2BaseVisitor.h"
+#include "Grammar3BaseVisitor.h"
 #include "Function.h"
 
 using namespace std;
-class Visitor : public Grammar2BaseVisitor
+class Visitor : public Grammar3BaseVisitor
 {
     public:
-      virtual antlrcpp::Any visitProg(Grammar2Parser::ProgContext *ctx) override
+      virtual antlrcpp::Any visitProg(Grammar3Parser::ProgContext *ctx) override
       {
-            //cout << "2.1" << endl;
             return visitChildren(ctx);
       }
 
-      virtual antlrcpp::Any visitMain(Grammar2Parser::MainContext *ctx) override
+      virtual antlrcpp::Any visitMain(Grammar3Parser::MainContext *ctx) override
       {
-            //cout << "2.2" << endl;
-
             Declaration *decl;
 
             vector<Declaration *> *declList = new vector<Declaration *>(0);
-
+            cout << "2.1" << endl;
             for (int i = 0; i < ctx->declaration().size(); i++)
             {
-                  //cout << "2.2.1" << endl;
                   decl = (Declaration *)visit(ctx->declaration(i));
-                  //cout << "2.2.2" << endl;
-                  this->declarations.insert(pair<string, Declaration *>(decl->left->name, decl));
                   declList->push_back(decl);
             }
-	    //cout << "2.3" << endl;
-	    vector<Statement *> *stats = new vector<Statement *>(0);
-	    if(ctx->rstat()){
-		StatementReturn *ret = (StatementReturn *)visit(ctx->rstat());
-	    	stats->push_back(ret);
-	    }else{
-            	stats = nullptr;
-	    }
-            return (Function *)new Function(declList, stats);
-            // return visitChildren(ctx);
+            cout << "2.2" << endl;
+
+            Statement *stat;
+            vector<Statement *> *statList = new vector<Statement *>(0);
+            for (int i = 0; i < ctx->stat().size(); i++)
+            {
+                  stat = (Statement *)visit(ctx->stat(i));
+                  statList->push_back(stat);
+            }
+            cout << "2.3" << endl;
+
+            StatementReturn *rstat = (StatementReturn *)visit(ctx->rstat());
+
+            cout << "2.4" << endl;
+
+            return (Function *)new Function(declList, statList, rstat);
       }
 
-      virtual antlrcpp::Any visitDecl(Grammar2Parser::DeclContext *ctx) override
+      virtual antlrcpp::Any visitDecl(Grammar3Parser::DeclContext *ctx) override
       {
-            //cout << "2.3" << endl;
 
             ExpressionVar *var = new ExpressionVar(ctx->ID()->getText().c_str());
 
             return (Declaration *)new Declaration(var);
-            // return visitChildren(ctx);
       }
 
-      virtual antlrcpp::Any visitInitVar(Grammar2Parser::InitVarContext *ctx) override
+      virtual antlrcpp::Any visitInit(Grammar3Parser::InitContext *ctx) override
       {
 
-            //cout << "2.4" << endl;
+            cout << "2.1.1" << endl;
+            Expression *right = visit(ctx->expr());
+            cout << "2.1.2" << endl;
+            ExpressionVar *left = new ExpressionVar(ctx->ID()->getText().c_str());
+            cout << "2.1.3" << endl;
 
-            // cout << "initVar" << endl;
-            ExpressionVar *right;
+            Declaration *declaration = new Declaration(left, right);
+            return (Declaration *)declaration;
+      }
 
-            // cout << ctx->ID(1)->getText() << endl;
-            // cout << declarations.size() << endl;
-            if (declarations[ctx->ID(1)->getText().c_str()])
+      virtual antlrcpp::Any visitRstat(Grammar3Parser::RstatContext *ctx) override
+      {
+            Expression *val = (Expression *)visit(ctx->expr());
+            return (StatementReturn *)new StatementReturn(val);
+      }
+
+      virtual antlrcpp::Any visitStat(Grammar3Parser::StatContext *ctx) override
+      {
+            ExpressionVar *left = new ExpressionVar(ctx->ID()->getText().c_str());
+            Expression *right = (Expression *)visit(ctx->expr());
+
+            return (Statement *)new Statement(left, right);
+      }
+
+      virtual antlrcpp::Any visitMultdiv(Grammar3Parser::MultdivContext *ctx) override
+      {
+            Expression *left = (Expression *)visit(ctx->expr(0));
+            Expression *right = (Expression *)visit(ctx->expr(1));
+
+            if (ctx->MULTDIV()->getText().compare("*") == 0)
             {
-                  right = declarations[ctx->ID(1)->getText().c_str()]->left;
+                  return (Expression *)new ExpressionMult(left, right);
             }
             else
             {
-                  cout << "PAS NORMAL" << endl;
+                  return (Expression *)new ExpressionDiv(left, right);
             }
-            ExpressionVar *left = new ExpressionVar(ctx->ID(0)->getText().c_str(), right);
-
-            Declaration *declaration = new Declaration(left, right);
-
-            // cout << declaration->toString() << endl;
-
-            return (Declaration *)declaration;
-            // return visitChildren(ctx);
       }
 
-      virtual antlrcpp::Any visitInitCst(Grammar2Parser::InitCstContext *ctx) override
+      virtual antlrcpp::Any visitPlusminus(Grammar3Parser::PlusminusContext *ctx) override
       {
-            //cout << "2.5" << endl;
+            Expression *left = (Expression *)visit(ctx->expr(0));
+            Expression *right = (Expression *)visit(ctx->expr(1));
 
-            ExpressionConst *val = new ExpressionConst(stoi(ctx->INT()->getText()));
-            ExpressionVar *var = new ExpressionVar(ctx->ID()->getText().c_str(), val);
-
-            Declaration *declaration = new Declaration(var, val);
-
-            // cout << declaration->toString() << endl;
-
-            return (Declaration *)declaration;
-            // return visitChildren(ctx);
+            if (ctx->PLUSMINUS()->getText().compare("+") == 0)
+            {
+                  return (Expression *)new ExpressionPlus(left, right);
+            }
+            else
+            {
+                  return (Expression *)new ExpressionMinus(left, right);
+            }
       }
 
-      virtual antlrcpp::Any visitRetInt(Grammar2Parser::RetIntContext *ctx) override
+      virtual antlrcpp::Any visitConst(Grammar3Parser::ConstContext *ctx) override
       {
-	    ExpressionConst *val = new ExpressionConst(stoi(ctx->INT()->getText()));
-	    return (StatementReturn *)new StatementReturn(val);
+            cout << "2.1.2.1" << endl;
+            ExpressionConst *val = new ExpressionConst((int)stoi(ctx->INT()->getText()));
+            cout << "2.1.2.2" << endl;
+            return (Expression *)val;
       }
 
-      virtual antlrcpp::Any visitRetVar(Grammar2Parser::RetVarContext *ctx) override
+      virtual antlrcpp::Any visitVar(Grammar3Parser::VarContext *ctx) override
       {
-	    ExpressionVar *val = declarations[ctx->ID()->getText().c_str()]->left;
-	    return (StatementReturn *) new StatementReturn(val);
+            return (Expression*)new ExpressionVar(ctx->ID()->getText().c_str());
       }
 
-    protected:
-      map<string, Declaration *> declarations;
+      virtual antlrcpp::Any visitPar(Grammar3Parser::ParContext *ctx) override
+      {
+            Expression *expression = (Expression *)visit(ctx->expr());
+            return (Expression *)new ExpressionPar(expression);
+      }
 };
