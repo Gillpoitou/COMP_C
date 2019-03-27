@@ -18,6 +18,7 @@ int main(int argc, char *argv[])
       string content = "";
       string line;
       ifstream myfile(argv[1]);
+      ofstream asmFile(argv[2], std::ofstream::out);
       if (myfile.is_open())
       {
             while (getline(myfile, line))
@@ -40,6 +41,8 @@ int main(int argc, char *argv[])
             cout << result->toString() << endl;
             // int resultat = (int)visitor.visit(tree);
             // cout << "Résultat " << resultat << endl;
+            result->buildASM(asmFile);
+            cout << "build success ASM generated" << endl;
       }
 
       else

@@ -1,6 +1,10 @@
+#pragma once 
 #include <vector>
 #include <string>
+#include <map>
+#include <stack>
 
+#include <iostream>
 #include "Declaration.h"
 #include "Statement.h"
 using namespace std;
@@ -8,7 +12,7 @@ using namespace std;
 class Function
 {
     public:
-      Function(vector<Declaration *> *declarations, vector<Statement *> *stats) : declarations(declarations), statements(stats) {}
+      Function(vector<Declaration *> *declarations, vector<Statement *> *stats);
       string toString()
       {
             string result = "Function = { \n";
@@ -23,7 +27,11 @@ class Function
 
             return result += "}\n";
       }
+      void buildASM(ostream &o);
 
       vector<Declaration *> *declarations;
       vector<Statement *> *statements;
+      map <string, int> SymbolIndex;
+      int lastOffset = 0;
 };
+
