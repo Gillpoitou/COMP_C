@@ -1,5 +1,6 @@
 #include "Expression.h"
 #include <string>
+#include <iostream>
 
 using namespace std;
 
@@ -16,6 +17,9 @@ class Declaration
                         return "Declaration = { left : " + left->toString() + " , right : null } \n";
                   }
             }
+
+            void buildASM(ostream &o);
+
 
             ExpressionVar * left;
             Expression * right;

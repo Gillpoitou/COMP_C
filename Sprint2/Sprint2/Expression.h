@@ -1,5 +1,6 @@
 #include <string>
 #include <sstream>
+#include <iostream>
 using namespace std;
 
 class Expression
@@ -7,6 +8,10 @@ class Expression
     public:
       virtual string toString(){
             return "";
+      };
+
+      virtual void buildASM(ostream &o){
+            
       };
 };
 
@@ -21,6 +26,9 @@ class ExpressionConst : public Expression
             ss << value;
             return "ExpressionConst = { value : " + ss.str() + " } \n";
       }
+
+      virtual void buildASM(ostream &o);
+
       int value;
 };
 
@@ -49,6 +57,8 @@ class ExpressionVar : public Expression
                   return "ExpressionVar = { name : " + name + " , value : null } \n";
             }
       }
+
+      virtual void buildASM(ostream &o);
 
       string name;
       ExpressionConst *value;
