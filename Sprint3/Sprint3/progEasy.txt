@@ -4,9 +4,6 @@ int main(){
       int cde = abc;
       int def;
       int ghi;
-      def=bde-abc;
-      ghi=4-9;
-      bde=2-abc;
-      cde=abc-1;
+      def=bde+abc+cde;
       return def;
 }

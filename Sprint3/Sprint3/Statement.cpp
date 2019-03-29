@@ -82,6 +82,55 @@ void Statement::buildASM(ostream &o, map<string,int>* symbolTable){
                 int minus = c_left->value - c_right->value;
                 o << "movl $" << minus << ", -" << reg_off << "(%rbp)" << endl;    
             }
+        }else if(ExpressionMult *m_right = dynamic_cast<ExpressionMult*>(right)){
+            if(ExpressionVar * v_left = dynamic_cast<ExpressionVar*>(m_right->left)){
+                int reg_off_left = symbolTable->find(v_left->name)->second;
+                if(ExpressionVar * v_right = dynamic_cast<ExpressionVar*>(m_right->right)){
+                        o << "movl -" << reg_off_left << "(%rbp), %eax" << endl;
+                        int reg_off_right = symbolTable->find(v_right->name)->second;
+                        o << "imull -" << reg_off_right << "(%rbp), %eax" << endl;
+                }else if(ExpressionConst * c_right = dynamic_cast<ExpressionConst*>(m_right->right)){
+                    //TODO;
+                }
+                o << "movl %eax, -" << reg_off << "(%rbp)" << endl;
+            
+            
+            }else if(ExpressionVar * v_right = dynamic_cast<ExpressionVar*>(m_right->right)){
+                if(ExpressionConst * c_left = dynamic_cast<ExpressionConst*>(m_right->left)){
+                    //TODO              
+                }
+                o << "movl %eax, -" << reg_off << "(%rbp)" << endl;
+            }else{
+                ExpressionConst * c_left = dynamic_cast<ExpressionConst*>(m_right->left);
+                ExpressionConst * c_right = dynamic_cast<ExpressionConst*>(m_right->right);
+                int mult = c_left->value * c_right->value;
+                o << "movl $" << mult << ", -" << reg_off << "(%rbp)" << endl;    
+            }
+        }else if(ExpressionMult *m_right = dynamic_cast<ExpressionMult*>(right)){
+            if(ExpressionVar * v_left = dynamic_cast<ExpressionVar*>(m_right->left)){
+                int reg_off_left = symbolTable->find(v_left->name)->second;
+                if(ExpressionVar * v_right = dynamic_cast<ExpressionVar*>(m_right->right)){
+                        o << "movl -" << reg_off_left << "(%rbp), %eax" << endl;
+                        int reg_off_right = symbolTable->find(v_right->name)->second;
+                        o << "cltd" << endl;
+                        o << "idivl -" << reg_off_right << "(%rbp)" << endl;
+                }else if(ExpressionConst * c_right = dynamic_cast<ExpressionConst*>(m_right->right)){
+                    //TODO;
+                }
+                o << "movl %eax, -" << reg_off << "(%rbp)" << endl;
+            
+            
+            }else if(ExpressionVar * v_right = dynamic_cast<ExpressionVar*>(m_right->right)){
+                if(ExpressionConst * c_left = dynamic_cast<ExpressionConst*>(m_right->left)){
+                    //TODO              
+                }
+                o << "movl %eax, -" << reg_off << "(%rbp)" << endl;
+            }else{
+                ExpressionConst * c_left = dynamic_cast<ExpressionConst*>(m_right->left);
+                ExpressionConst * c_right = dynamic_cast<ExpressionConst*>(m_right->right);
+                int div = c_left->value / c_right->value;
+                o << "movl $" << div << ", -" << reg_off << "(%rbp)" << endl;    
+            }
         }
     }
 }
