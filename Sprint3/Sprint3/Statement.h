@@ -1,5 +1,7 @@
+#pragma once
 #include "string"
 #include "Expression.h"
+#include <map>
 using namespace std;
 
 class Expression;
@@ -17,6 +19,7 @@ class StatementReturn
 {
     public:
       StatementReturn(Expression *expr) : value(expr) {}
+      virtual void buildASM(ostream &o, map<string,int>* symbolTable);
       string toString();
       Expression *value;
 };
