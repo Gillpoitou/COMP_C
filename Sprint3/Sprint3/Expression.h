@@ -1,6 +1,7 @@
 #ifndef EXPRESSION_H
 #define EXPRESSION_H
 
+#include <map>
 #include <string>
 #include <sstream>
 using namespace std;

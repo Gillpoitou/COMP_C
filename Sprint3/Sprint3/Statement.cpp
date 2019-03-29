@@ -24,7 +24,36 @@ void Statement::buildASM(ostream &o, map<string,int>* symbolTable){
            int reg_off_right = symbolTable->find(v_right->name)->second;
            o << "movl -" << reg_off_right << "(%rbp), %eax" << endl;
            o << "movl %eax, -" << reg_off << "(%rbp)" << endl;
-       }
+       
+       }else if(ExpressionPlus *p_right = dynamic_cast<ExpressionPlus*>(right)){
+
+             if(ExpressionVar * v_left = dynamic_cast<ExpressionVar*>(p_right->left)){
+                int reg_off_left = symbolTable->find(v_left->name)->second;
+                if(ExpressionVar * v_right = dynamic_cast<ExpressionVar*>(p_right->right)){
+                        o << "movl -" << reg_off_left << "(%rbp), %edx" << endl;
+                        int reg_off_right = symbolTable->find(v_right->name)->second;
+                        o << "movl -" << reg_off_right << "(%rbp), %eax" << endl;
+                        o << "addl %edx, %eax" << endl;
+                }else if(ExpressionConst * c_right = dynamic_cast<ExpressionConst*>(p_right->right)){
+                    o << "movl -" << reg_off_left << "(%rbp), %eax" << endl;
+                    o << "addl $" << c_right->value << ", %eax" <<endl;
+                }
+                o << "movl %eax, -" << reg_off << "(%rbp)" << endl;
+            }else if(ExpressionVar * v_right = dynamic_cast<ExpressionVar*>(p_right->right)){
+                if(ExpressionConst * c_left = dynamic_cast<ExpressionConst*>(p_right->left)){
+                    int reg_off_right = symbolTable->find(v_right->name)->second;
+                    o << "movl -" << reg_off_right << "(%rbp), %eax" << endl;
+                    o << "addl $" << c_left->value << ", %eax" <<endl;
+                }
+                o << "movl %eax, -" << reg_off << "(%rbp)" << endl;
+            }else{
+                ExpressionConst * c_left = dynamic_cast<ExpressionConst*>(p_right->left);
+                ExpressionConst * c_right = dynamic_cast<ExpressionConst*>(p_right->right);
+                int add = c_left->value + c_right->value;
+                o << "movl $" << add << ", -" << reg_off << "(%rbp)" << endl;
+                 
+            }
+        }
     }
 }
 
