@@ -1,4 +1,5 @@
 #include "Function.h"
+#include <iostream>
 
 Function::Function(vector<Declaration *> *declarations, vector<Statement *> *stats, StatementReturn *rstat){
  this->declarations = declarations;

@@ -33,15 +33,16 @@ int main(int argc, char *argv[])
             CommonTokenStream tokens(&lexer);
             Grammar3Parser parser(&tokens);
             tree::ParseTree *tree = parser.prog();
-            // cout << tree->toStringTree() << endl;
+            //cout << tree->toStringTree() << endl;
             Visitor visitor;
             // cout << "2" << endl;
             Function *result = (Function *)visitor.visit(tree);
             //cout << "3" << endl;
+            //int resultat = (int)visitor.visit(tree);
+            //cout << "Résultat " << result->toString() << endl;
             result->buildASM(asmFile);
             cout << "build success ASM generated" << endl;
-            // int resultat = (int)visitor.visit(tree);
-            // cout << "Résultat " << resultat << endl;
+            
       }
 
       else

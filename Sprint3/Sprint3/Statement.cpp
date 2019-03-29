@@ -1,5 +1,8 @@
 #include "Statement.h"
 #include "Expression.h"
+#include <iostream>
+
+using namespace std;
 
 string Statement::toString()
 {
@@ -52,6 +55,32 @@ void Statement::buildASM(ostream &o, map<string,int>* symbolTable){
                 int add = c_left->value + c_right->value;
                 o << "movl $" << add << ", -" << reg_off << "(%rbp)" << endl;
                  
+            }
+
+        }else if(ExpressionMinus *m_right = dynamic_cast<ExpressionMinus*>(right)){
+            if(ExpressionVar * v_left = dynamic_cast<ExpressionVar*>(m_right->left)){
+                int reg_off_left = symbolTable->find(v_left->name)->second;
+                if(ExpressionVar * v_right = dynamic_cast<ExpressionVar*>(m_right->right)){
+                        o << "movl -" << reg_off_left << "(%rbp), %eax" << endl;
+                        int reg_off_right = symbolTable->find(v_right->name)->second;
+                        o << "subl -" << reg_off_right << "(%rbp), %eax" << endl;
+                }else if(ExpressionConst * c_right = dynamic_cast<ExpressionConst*>(m_right->right)){
+                    o << "movl -" << reg_off_left << "(%rbp), %eax" << endl;
+                    o << "subl $" << c_right->value << ", %eax" <<endl;
+                }
+                o << "movl %eax, -" << reg_off << "(%rbp)" << endl;
+            }else if(ExpressionVar * v_right = dynamic_cast<ExpressionVar*>(m_right->right)){
+                if(ExpressionConst * c_left = dynamic_cast<ExpressionConst*>(m_right->left)){
+                    int reg_off_right = symbolTable->find(v_right->name)->second;
+                    o << "movl $" << c_left->value << ", %eax" <<endl;
+                    o << "subl -" << reg_off_right << "(%rbp), %eax" << endl;                
+                }
+                o << "movl %eax, -" << reg_off << "(%rbp)" << endl;
+            }else{
+                ExpressionConst * c_left = dynamic_cast<ExpressionConst*>(m_right->left);
+                ExpressionConst * c_right = dynamic_cast<ExpressionConst*>(m_right->right);
+                int minus = c_left->value - c_right->value;
+                o << "movl $" << minus << ", -" << reg_off << "(%rbp)" << endl;    
             }
         }
     }
