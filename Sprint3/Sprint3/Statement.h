@@ -10,6 +10,7 @@ class Statement
 {
     public:
       Statement(ExpressionVar *left, Expression *right) : left(left), right(right) {}
+      virtual void buildASM(ostream &o, map<string,int>* symbolTable);
       ExpressionVar *left;
       Expression *right;
       string toString();

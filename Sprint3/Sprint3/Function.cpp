@@ -18,7 +18,9 @@ void Function::buildASM(ostream &o){
       for(Declaration* decl : *declarations){
         decl->buildASM(o,&SymbolIndex, &lastOffset);
       }
-
+      for(Statement* stat : *statements){
+        stat->buildASM(o,&SymbolIndex);
+      }
       rstat->buildASM(o,&SymbolIndex);
 
       o << "popq    %rbp" << endl;

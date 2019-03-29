@@ -4,6 +4,6 @@ int main(){
       int cde = abc;
       int def;
       int ghi;
-
+      def=bde;
       return def;
 }
