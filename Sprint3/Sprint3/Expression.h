@@ -9,6 +9,7 @@ using namespace std;
 class Expression
 {
     public:
+			virtual void buildASM(ostream &o, map<string,int>* symbolTable){}
       virtual string toString()
       {
             return "";
@@ -55,12 +56,16 @@ class ExpressionPar : public Expression
 
 class ExpressionBinary : public Expression
 {
-    public:
-      Expression *right;
+		public:
+			Expression *right;
       Expression *left;
-
+			
       ExpressionBinary(Expression *left, Expression *right) : right(right), left(left) {}
-      virtual string toString() = 0;
+      virtual string toString() 
+			{ 
+					return "";
+			};
+			virtual void buildASM(ostream &o, map<string,int>* symbolTable){}
 };
 
 class ExpressionPlus : public ExpressionBinary
@@ -71,6 +76,7 @@ class ExpressionPlus : public ExpressionBinary
       {
             return "ExpressionPlus = { right : " + right->toString() + ", left : " + left->toString() + "\n";
       }
+			virtual void buildASM(ostream &o, map<string,int>* symbolTable);
 };
 
 class ExpressionMinus : public ExpressionBinary

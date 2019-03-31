@@ -12,7 +12,9 @@ void Function::buildASM(ostream &o){
 
     int N;
     N = declarations->size()*4 +16;
-
+      o << ".text" << endl;
+      o << ".global main" << endl;
+      o << "main:" << endl;
       o << "pushq %rbp" << endl;
       o << "movq    %rsp, %rbp" << endl;
 
