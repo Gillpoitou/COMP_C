@@ -102,7 +102,7 @@ void BasicBlock::add_IRInstr(IRInstr::Operation op, Type t, vector<string> param
       instrs.push_back(new IRInstr(this,op,t,params));
 }
 
-CFG::CFG(DefFonction* ast){
+CFG::CFG(Function* ast){
       this->ast = ast;
 }
 

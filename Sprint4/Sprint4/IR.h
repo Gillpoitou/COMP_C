@@ -10,10 +10,10 @@
 using namespace std;
 // Declarations from the parser -- replace with your own
 #include "Type.h"
+#include "Function.h"
 //#include "symbole.h"
 class BasicBlock;
 class CFG;
-class DefFonction;
 
 
 //! The class for one 3-address instruction
@@ -67,6 +67,7 @@ class IRInstr {
 class BasicBlock {
  public:
 	BasicBlock(CFG* cfg, string entry_label);
+
 	void gen_asm(ostream &o); /**< x86 assembly code generation for this basic block (very simple) */
 
 	void add_IRInstr(IRInstr::Operation op, Type t, vector<string> params);
@@ -96,9 +97,9 @@ class BasicBlock {
  */
 class CFG {
  public:
-	CFG(DefFonction* ast);
+	CFG(Function* ast);
 
-	DefFonction* ast; /**< The AST this CFG comes from */
+	Function* ast; /**< The AST this CFG comes from */
 	
 	void add_bb(BasicBlock* bb); 
 
