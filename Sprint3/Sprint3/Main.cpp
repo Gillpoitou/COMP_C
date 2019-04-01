@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
             Function *result = (Function *)visitor.visit(tree);
             //cout << "3" << endl;
             //int resultat = (int)visitor.visit(tree);
-            //cout << "Résultat " << result->toString() << endl;
+            cout << "Résultat " << result->toString() << endl;
             result->buildASM(asmFile);
             cout << "build success ASM generated" << endl;
             

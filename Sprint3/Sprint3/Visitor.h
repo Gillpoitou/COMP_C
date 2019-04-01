@@ -37,7 +37,6 @@ class Visitor : public Grammar3BaseVisitor
 
             StatementReturn *rstat = (StatementReturn *)visit(ctx->rstat());
 
-
             return (Function *)new Function(declList, statList, rstat);
       }
 
@@ -78,14 +77,7 @@ class Visitor : public Grammar3BaseVisitor
             Expression *left = (Expression *)visit(ctx->expr(0));
             Expression *right = (Expression *)visit(ctx->expr(1));
 
-            if (ctx->MULTDIV()->getText().compare("*") == 0)
-            {
-                  return (Expression *)new ExpressionMult(left, right);
-            }
-            else
-            {
-                  return (Expression *)new ExpressionDiv(left, right);
-            }
+            return (Expression *)new ExpressionMult(left, right);
       }
 
       virtual antlrcpp::Any visitPlusminus(Grammar3Parser::PlusminusContext *ctx) override
@@ -111,7 +103,7 @@ class Visitor : public Grammar3BaseVisitor
 
       virtual antlrcpp::Any visitVar(Grammar3Parser::VarContext *ctx) override
       {
-            return (Expression*)new ExpressionVar(ctx->ID()->getText().c_str());
+            return (Expression *)new ExpressionVar(ctx->ID()->getText().c_str());
       }
 
       virtual antlrcpp::Any visitPar(Grammar3Parser::ParContext *ctx) override

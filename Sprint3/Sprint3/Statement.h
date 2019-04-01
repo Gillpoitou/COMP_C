@@ -10,7 +10,7 @@ class Statement
 {
     public:
       Statement(ExpressionVar *left, Expression *right) : left(left), right(right) {}
-      virtual void buildASM(ostream &o, map<string,int>* symbolTable);
+      virtual void buildASM(ostream &o, map<string,int>* symbolTable, int* lastOffset);
       ExpressionVar *left;
       Expression *right;
       string toString();
@@ -20,7 +20,7 @@ class StatementReturn
 {
     public:
       StatementReturn(Expression *expr) : value(expr) {}
-      virtual void buildASM(ostream &o, map<string,int>* symbolTable);
+      virtual string buildASM(ostream &o, map<string,int>* symbolTable, int* lastOffset);
       string toString();
       Expression *value;
 };

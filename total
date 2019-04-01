@@ -1,0 +1,7 @@
+#!/bin/bash
+
+./comp $1
+
+./comp2 $1
+
+./execute $1

@@ -2,6 +2,7 @@
 #include <iostream>
 using namespace std;
 
+/*
 void ExpressionPlus::buildASM(ostream &o, map<string,int>* symbolTable){
 		// a + ?
 		if(ExpressionVar * v_left = dynamic_cast<ExpressionVar*>(left)){
@@ -151,5 +152,85 @@ void ExpressionPlus::buildASM(ostream &o, map<string,int>* symbolTable){
 						}		
 				}
 		}
+}*/
+
+string ExpressionConst::buildASM(ostream &o, map<string, int> *symbolTable, int *lastOffset)
+{
+      *lastOffset = *lastOffset + 4;
+      string name = "const" + to_string(*lastOffset);
+      pair<string, int> var(name, *lastOffset);
+      symbolTable->insert(var);
+      o << "movl $" << this->value << ", -" << *lastOffset << "(%rbp)" << endl;
+      return name;
 }
 
+string ExpressionVar::buildASM(ostream &o, map<string, int> *symbolTable, int *lastOffset)
+{
+      return this->name;
+}
+
+string ExpressionPar::buildASM(ostream &o, map<string, int> *symbolTable, int *lastOffset)
+{
+      return this->value->buildASM(o, symbolTable, lastOffset);
+}
+
+string ExpressionPlus::buildASM(ostream &o, map<string, int> *symbolTable, int *lastOffset)
+{
+      string leftName = this->left->buildASM(o, symbolTable, lastOffset);
+      int reg_off_left = symbolTable->find(leftName)->second;
+      string rightName = this->right->buildASM(o, symbolTable, lastOffset);
+      int reg_off_right = symbolTable->find(rightName)->second;
+
+      o << "movl -" << reg_off_left << "(%rbp), %edx" << endl;
+      o << "movl -" << reg_off_right << "(%rbp), %eax" << endl;
+      o << "addl %edx, %eax" << endl;
+
+      *lastOffset = *lastOffset + 4;
+      string name = "plus" + to_string(*lastOffset);
+      pair<string, int> var(name, *lastOffset);
+      symbolTable->insert(var);
+
+      o << "movl %eax, -" << *lastOffset << "(%rbp)" << endl;
+
+      return name;
+}
+
+string ExpressionMinus::buildASM(ostream &o, map<string, int> *symbolTable, int *lastOffset)
+{
+      string leftName = this->left->buildASM(o, symbolTable, lastOffset);
+      int reg_off_left = symbolTable->find(leftName)->second;
+      string rightName = this->right->buildASM(o, symbolTable, lastOffset);
+      int reg_off_right = symbolTable->find(rightName)->second;
+
+      o << "movl -" << reg_off_left << "(%rbp), %eax" << endl;
+      o << "subl -" << reg_off_right << "(%rbp), %eax" << endl;
+
+      *lastOffset = *lastOffset + 4;
+      string name = "minus" + to_string(*lastOffset);
+      pair<string, int> var(name, *lastOffset);
+      symbolTable->insert(var);
+
+      o << "movl %eax, -" << *lastOffset << "(%rbp)" << endl;
+
+      return name;
+}
+
+string ExpressionMult::buildASM(ostream &o, map<string, int> *symbolTable, int *lastOffset)
+{
+      string leftName = this->left->buildASM(o, symbolTable, lastOffset);
+      int reg_off_left = symbolTable->find(leftName)->second;
+      string rightName = this->right->buildASM(o, symbolTable, lastOffset);
+      int reg_off_right = symbolTable->find(rightName)->second;
+
+      o << "movl -" << reg_off_left << "(%rbp), %eax" << endl;
+      o << "imull -" << reg_off_right << "(%rbp), %eax" << endl;
+
+      *lastOffset = *lastOffset + 4;
+      string name = "mult" + to_string(*lastOffset);
+      pair<string, int> var(name, *lastOffset);
+      symbolTable->insert(var);
+
+      o << "movl %eax, -" << *lastOffset << "(%rbp)" << endl;
+
+      return name;
+}

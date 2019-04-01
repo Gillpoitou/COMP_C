@@ -14,39 +14,62 @@ string StatementReturn::toString()
       return "Return = { value : " + value->toString() + " }\n";
 }
 
-void Statement::buildASM(ostream &o, map<string,int>* symbolTable){
-    if(right != nullptr){
-        int reg_off = symbolTable->find(left->name)->second;
+void Statement::buildASM(ostream &o, map<string, int> *symbolTable, int *lastOffset)
+{
+      if (right != nullptr)
+      {
+            int reg_off = symbolTable->find(left->name)->second;
 
-        if(ExpressionConst * c_right = dynamic_cast<ExpressionConst*>(right)){
-   
-           o << "movl $" << c_right->value << ", -" << reg_off << "(%rbp)" << endl;
+            //   if(ExpressionConst * c_right = dynamic_cast<ExpressionConst*>(right)){
 
-        }else if(ExpressionVar * v_right = dynamic_cast<ExpressionVar*>(right)){
+            //      o << "movl $" << c_right->value << ", -" << reg_off << "(%rbp)" << endl;
 
-           int reg_off_right = symbolTable->find(v_right->name)->second;
-           o << "movl -" << reg_off_right << "(%rbp), %eax" << endl;
-           o << "movl %eax, -" << reg_off << "(%rbp)" << endl;
-       
-        }else if(Expression *p_right = dynamic_cast<Expression*>(right)){
-			right->buildASM(o, symbolTable);
-			o << "movl %eax, -" << reg_off << "(%rbp)" << endl;
-		}
-    }
+            //   }else if(ExpressionVar * v_right = dynamic_cast<ExpressionVar*>(right)){
+
+            //      int reg_off_right = symbolTable->find(v_right->name)->second;
+            //      o << "movl -" << reg_off_right << "(%rbp), %eax" << endl;
+            //      o << "movl %eax, -" << reg_off << "(%rbp)" << endl;
+
+            //   }else if(Expression *p_right = dynamic_cast<Expression*>(right)){
+            // 		right->buildASM(o, symbolTable, lastOffset);
+            // 		o << "movl %eax, -" << reg_off << "(%rbp)" << endl;
+            // 	}
+
+            string temp = right->buildASM(o, symbolTable, lastOffset);
+            int reg_off_right = symbolTable->find(temp)->second;
+
+            o << "movl -" << reg_off_right << "(%rbp), %eax" << endl;
+            o << "movl %eax, -" << reg_off << "(%rbp)" << endl;
+      }
 }
 
-void StatementReturn::buildASM(ostream &o, map<string,int>* symbolTable){
+string StatementReturn::buildASM(ostream &o, map<string, int> *symbolTable, int *lastOffset)
+{
+      if (value != nullptr)
+      {
+            // if (ExpressionConst *c_value = dynamic_cast<ExpressionConst *>(value))
+            // {
 
-	if(value != nullptr){
+            //       o << "movl $" << c_value->value << ", %eax" << endl;
+            // }
+            // else if (ExpressionVar *v_value = dynamic_cast<ExpressionVar *>(value))
+            // {
 
-       if(ExpressionConst * c_value = dynamic_cast<ExpressionConst*>(value)){
-   
-           o << "movl $" << c_value->value << ", %eax" << endl;
+            //       int reg_off_value = symbolTable->find(v_value->name)->second;
+            //       o << "movl -" << reg_off_value << "(%rbp), %eax" << endl;
+            // }
 
-       }else if(ExpressionVar * v_value = dynamic_cast<ExpressionVar*>(value)){
+            *lastOffset = *lastOffset + 4;
+            string name = "return" + to_string(*lastOffset);
+            pair<string, int> var(name, *lastOffset);
+            symbolTable->insert(var);
 
-           int reg_off_value = symbolTable->find(v_value->name)->second;
-           o << "movl -" << reg_off_value << "(%rbp), %eax" << endl;
-       }
-    }
+            string temp = value->buildASM(o, symbolTable, lastOffset);
+            int reg_off_right = symbolTable->find(temp)->second;
+
+            o << "movl -" << reg_off_right << "(%rbp), %eax" << endl;
+            o << "movl %eax, -" << *lastOffset << "(%rbp)" << endl;
+
+            return name;
+      }
 }
