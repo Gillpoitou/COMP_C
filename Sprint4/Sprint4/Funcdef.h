@@ -5,13 +5,14 @@
 #include "Statement.h"
 using namespace std;
 
-class Function
+class Funcdef
 {
+      //TODO change everything 
     public:
-      Function(vector<Declaration *> *declarations, vector<Statement *> *stats, StatementReturn *rstat) : declarations(declarations), statements(stats), rstat(rstat) {}
+      MainFunction(vector<Declaration *> *declarations, vector<Statement *> *stats, StatementReturn *rstat) : declarations(declarations), statements(stats), rstat(rstat) {}
       string toString()
       {
-            string result = "Function = { \n";
+            string result = "MainFunction = { \n";
             for (vector<Declaration *>::iterator it = declarations->begin(); it != declarations->end(); ++it)
             {
                   result += ((Declaration *)*it)->toString() + "\n";
