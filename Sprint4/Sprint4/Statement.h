@@ -3,11 +3,13 @@
 using namespace std;
 
 class Expression;
+class BasicBlock;
 
 class Statement
 {
     public:
       Statement(ExpressionVar *left, Expression *right) : left(left), right(right) {}
+      void build_IR(BasicBlock*);
       ExpressionVar *left;
       Expression *right;
       string toString();

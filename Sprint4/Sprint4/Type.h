@@ -4,16 +4,16 @@
 typedef enum{
 
     INT
-}TypeName;
+}Type;
 
-class Type{
+/*class Type{
 public:
 
 TypeName name;
 int size; //size of the type variable (byte)
 
 protected:
-};
+};*/
 
 
 #endif

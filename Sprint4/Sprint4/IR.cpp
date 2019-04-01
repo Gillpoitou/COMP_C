@@ -1,4 +1,5 @@
 #include "IR.h"
+#include "Function.h"
 
 //------------IRInstr
 IRInstr::IRInstr(BasicBlock* bb_, Operation op, Type t, vector<string> params){
@@ -14,8 +15,7 @@ void IRInstr::gen_asm(ostream &o){
     {
         case Operation::ldconst:
         {
-		string reg = params[0].substr(4);
-            o << "movq $" + params[1] + ",      -" + reg + "(%rpb)" << endl;
+            o << "movl $" << params[1] << ", -" << this->bb->cfg->get_var_index(params[0]) << "(%rbp)" << endl;
             break;
             }
         case Operation::add:
@@ -56,7 +56,8 @@ void IRInstr::gen_asm(ostream &o){
 
             break;
 	case wmem:
-
+           o << "movl -" << this->bb->cfg->get_var_index(params[1]) << "(%rbp), %eax" << endl;
+           o << "movl %eax, -" << this->bb->cfg->get_var_index(params[0]) << "(%rbp)" << endl;
             break;
 	case call:
 
@@ -81,18 +82,18 @@ BasicBlock::BasicBlock(CFG* cfg, string entry_label){
 }
 
 void BasicBlock::gen_asm(ostream &o){
-      o << "." << label << endl;
+      //o << "." << label << endl;
 
       for(IRInstr* i : instrs){
             i->gen_asm(o);
       }
 
       if(exit_true == nullptr){
-            cfg->gen_asm_epilogue(o);
             return;
       }
       if(exit_false != nullptr){
             o << "." << exit_false->label << endl;
+            exit_false->gen_asm(o);
       }
 
       exit_true->gen_asm(o);
@@ -104,6 +105,7 @@ void BasicBlock::add_IRInstr(IRInstr::Operation op, Type t, vector<string> param
 
 CFG::CFG(Function* ast){
       this->ast = ast;
+
 }
 
 void CFG::add_bb(BasicBlock* bb){
@@ -111,9 +113,11 @@ void CFG::add_bb(BasicBlock* bb){
 }
 
 void CFG::gen_asm(ostream& o){
+      gen_asm_prologue(o);
       for(BasicBlock* cbb : bbs){
             cbb->gen_asm(o);
       }
+      gen_asm_epilogue(o);
 }
 
 string CFG::IR_reg_to_asm(string reg){
@@ -122,21 +126,22 @@ string CFG::IR_reg_to_asm(string reg){
 }
 
 void CFG::gen_asm_prologue(ostream& o){
-      int N;
-      for(map<string,Type>::iterator itr = SymbolType.begin(), itr_end = SymbolType.end(); itr != itr_end ; itr++){
-            N += itr->second.size;
-      }
-
-      o << "enter " << N << ", 0" << endl;
+      o << ".text" << endl;
+      o << ".global main" << endl;
+      o << "main:" << endl;
+      o << "pushq %rbp" << endl;
+      o << "movq    %rsp, %rbp" << endl;
 }
 
 void CFG::gen_asm_epilogue(ostream& o){
-      o << "leave" << endl;
+      o << "popq    %rbp" << endl;
       o << "ret" << endl;
 }
 
 void CFG::add_to_symbol_table(string name, Type t){
       SymbolType.insert(pair<string,Type>(name,t));
+      nextFreeSymbolIndex = nextFreeSymbolIndex + 4;
+      SymbolIndex.insert(pair<string,int>(name,nextFreeSymbolIndex));
 }
 
 string CFG::create_new_tempvar(Type t){

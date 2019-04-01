@@ -10,10 +10,10 @@
 using namespace std;
 // Declarations from the parser -- replace with your own
 #include "Type.h"
-#include "Function.h"
 //#include "symbole.h"
 class BasicBlock;
 class CFG;
+class Function;
 
 
 //! The class for one 3-address instruction
