@@ -1,6 +1,10 @@
+compilo
+
 exe
 
-exe.DSYM
+*.dSYM
+
+*.asm
 
 Expr*
 
