@@ -17,7 +17,6 @@ stat: ID '=' expr ';'   #asgn
 expr: expr MULTDIV expr # multdiv
     | expr PLUSMINUS expr # plusminus
     | INT           # const
-    | CHAR          #constchar
     | ID            # var
     | '(' expr ')'  # par
     | fncall        #callr
@@ -43,13 +42,11 @@ rtype: type
     | 'void'
     ;
 type: 'int'
-    | 'char'
     ;
 
 MULTDIV: [*/];
 PLUSMINUS: [+-];
 INT: [0-9]+;
-CHAR: '\'' . '\'';
 
 ID: [a-zA-Z][a-zA-Z0-9]+;
 WS : [ \n\t\r] -> skip;
