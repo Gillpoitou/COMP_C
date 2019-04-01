@@ -7,7 +7,7 @@ string ExpressionBinary::build_IR(CFG* ir_cfg){
 
 string ExpressionConst::build_IR(CFG* ir_cfg){
     string var = ir_cfg->create_new_tempvar(INT);
-    vector<string> params (2);
+    vector<string> params;
     params.push_back(var);
     params.push_back(to_string(this->value));
     ir_cfg->current_bb->add_IRInstr(IRInstr::Operation::ldconst, INT, params);
@@ -35,5 +35,5 @@ string ExpressionPlus::build_IR(CFG* ir_cfg){
 }
 
 string ExpressionVar::build_IR(CFG* ir_cfg){
-    return "";
+    return name;
 }

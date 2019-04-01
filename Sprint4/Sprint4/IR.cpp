@@ -1,5 +1,6 @@
 #include "IR.h"
 #include "Function.h"
+#include <iostream>
 
 //------------IRInstr
 IRInstr::IRInstr(BasicBlock* bb_, Operation op, Type t, vector<string> params){
@@ -10,7 +11,6 @@ IRInstr::IRInstr(BasicBlock* bb_, Operation op, Type t, vector<string> params){
 }
 
 void IRInstr::gen_asm(ostream &o){
-      
     switch (this->op)
     {
         case Operation::ldconst:
@@ -71,6 +71,8 @@ void IRInstr::gen_asm(ostream &o){
 	case cmp_le:
 
             break;
+	case ret:
+	  o << "movl -" << this->bb->cfg->get_var_index(params[0]) << "(%rbp), %eax" << endl;
       default:
             break;
     }
@@ -79,6 +81,8 @@ void IRInstr::gen_asm(ostream &o){
 BasicBlock::BasicBlock(CFG* cfg, string entry_label){
       this->cfg = cfg;
       this->label = entry_label;
+      this->exit_true = nullptr;
+      this->exit_false = nullptr;
 }
 
 void BasicBlock::gen_asm(ostream &o){
@@ -87,7 +91,6 @@ void BasicBlock::gen_asm(ostream &o){
       for(IRInstr* i : instrs){
             i->gen_asm(o);
       }
-
       if(exit_true == nullptr){
             return;
       }
@@ -145,8 +148,9 @@ void CFG::add_to_symbol_table(string name, Type t){
 }
 
 string CFG::create_new_tempvar(Type t){
-      //TODO
-      return "";
+      string name = "temp"+ to_string(nextFreeSymbolIndex);
+      add_to_symbol_table(name, t);
+      return name;
 }
 
 int CFG::get_var_index(string name){

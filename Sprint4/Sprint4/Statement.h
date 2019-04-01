@@ -20,5 +20,6 @@ class StatementReturn
     public:
       StatementReturn(Expression *expr) : value(expr) {}
       string toString();
+      string build_IR(CFG*);
       Expression *value;
 };
