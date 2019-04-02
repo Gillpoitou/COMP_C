@@ -29,28 +29,15 @@ string ExpressionMinus::build_IR(CFG* ir_cfg){
 string ExpressionMult::build_IR(CFG* ir_cfg){
 
     string leftName = this->left->build_IR(ir_cfg);
-      //int reg_off_left = symbolTable->find(leftName)->second;
     string rightName = this->right->build_IR(ir_cfg);
     string var = ir_cfg->create_new_tempvar(INT);
     vector<string> params;
+    params.push_back(var);
     params.push_back(leftName);
     params.push_back(rightName);
-    params.push_back(var);
-     ir_cfg->current_bb->add_IRInstr(IRInstr::Operation::mul, INT, params);
-      //int reg_off_right = symbolTable->find(rightName)->second;
+    ir_cfg->current_bb->add_IRInstr(IRInstr::Operation::mul, INT, params);
 
-     //o << "movl -" << reg_off_left << "(%rbp), %eax" << endl;
-     //o << "imull -" << reg_off_right << "(%rbp), %eax" << endl;
-
-      /**lastOffset = *lastOffset + 4;
-      string name = "mult" + to_string(*lastOffset);
-      pair<string, int> var(name, *lastOffset);
-      symbolTable->insert(var);*/
-
-
-      //o << "movl %eax, -" << *lastOffset << "(%rbp)" << endl;
-
-      return var;
+    return var;
 }
 
 string ExpressionPar::build_IR(CFG* ir_cfg){

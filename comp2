@@ -2,4 +2,4 @@
 
 dossier="Sprint$1"
 
-echo "$($dossier/compilo $dossier/$dossier/prog.txt $dossier/prog.asm)"
+echo "$($dossier/compilo $dossier/$dossier/prog.txt $dossier/prog.s)"

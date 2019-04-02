@@ -19,6 +19,8 @@ string Statement::build_IR(CFG* ir_cfg){
     params.push_back(leftName);
     params.push_back(temp);
     ir_cfg->current_bb->add_IRInstr(IRInstr::Operation::wmem,INT,params); 
+    
+    return leftName;
 }
 
 string StatementReturn::build_IR(CFG* ir_cfg){

@@ -1,7 +1,6 @@
 int main(){
-      int abc = 3;
-      int bde = 4;
-      int cde = abc;
+      int abc = 3*5 + 7*(6-3);
 
-      return cde;
+
+      return abc;
 }

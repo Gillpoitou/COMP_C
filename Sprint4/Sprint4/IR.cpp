@@ -33,7 +33,9 @@ void IRInstr::gen_asm(ostream &o){
 	    o << "movl %eax, -" << this->bb->cfg->get_var_index(params[0]) << "(%rbp)" << endl;
             break;
 	case mul:
-
+            o << "movl -" << this->bb->cfg->get_var_index(params[1]) << "(%rbp), %eax" << endl;
+            o << "imull -" << this->bb->cfg->get_var_index(params[2]) << "(%rbp), %eax" << endl;
+            o << "movl %eax, -" << this->bb->cfg->get_var_index(params[0]) << "(%rbp)" << endl;
             break;
 	case rmem:
 
