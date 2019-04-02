@@ -1,9 +1,11 @@
 grammar Grammar3;
 prog: main;
 main: 'int' 'main' '(' ')' '{' declaration* stat* rstat '}';
-declaration: 'int' ID ';' #decl
-    | 'int' ID '=' expr ';' #init
-    ;
+declaration: 'int' variable variableList* ';' ;
+variableList: ',' variable ;
+variable: ID #decl
+      | ID '=' expr #init
+      ;
 rstat: 'return' expr ';';
 stat: ID '=' expr ';';
 expr: expr MULTDIV expr # multdiv
@@ -12,7 +14,6 @@ expr: expr MULTDIV expr # multdiv
     | ID            # var
     | '(' expr ')'  # par
     ;
-
 MULTDIV: [*/];
 PLUSMINUS: [+-];
 INT: [0-9]+;
