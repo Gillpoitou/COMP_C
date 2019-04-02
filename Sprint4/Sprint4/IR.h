@@ -123,7 +123,7 @@ class CFG {
  protected:
 	map <string, Type> SymbolType; /**< part of the symbol table  */
 	map <string, int> SymbolIndex; /**< part of the symbol table  */
-	int nextFreeSymbolIndex; /**< to allocate new symbols in the symbol table */
+	int nextFreeSymbolIndex=4; /**< to allocate new symbols in the symbol table */
 	int nextBBnumber; /**< just for naming */
 	
 	vector <BasicBlock*> bbs; /**< all the basic blocks of this CFG*/

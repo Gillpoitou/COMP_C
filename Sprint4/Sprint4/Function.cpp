@@ -13,7 +13,7 @@ void Function::build_IR(CFG* ir_cfg){
       }
 
       for(Statement* statm : *statements){
-          //statm->build_IR(first_bb);
+          statm->build_IR(ir_cfg);
       }
 
       rstat->build_IR(ir_cfg);
