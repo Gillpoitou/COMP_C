@@ -9,7 +9,7 @@ class Statement
 {
     public:
       Statement(ExpressionVar *left, Expression *right) : left(left), right(right) {}
-      void build_IR(BasicBlock*);
+      string build_IR(CFG*);
       ExpressionVar *left;
       Expression *right;
       string toString();
