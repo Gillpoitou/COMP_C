@@ -12,7 +12,7 @@ string StatementReturn::toString()
       return "Return = { value : " + value->toString() + " }\n";
 }
 
-string Statement::build_IR(){
+string Statement::build_IR(CFG* ir_cfg){
     string temp = right->build_IR(ir_cfg);
     string leftName = left->build_IR(ir_cfg);
     vector<string> params;
