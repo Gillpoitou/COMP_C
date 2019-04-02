@@ -8,7 +8,7 @@ using namespace std;
 class Function
 {
     public:
-      Function(vector<Declaration *> *declarations, vector<Statement *> *stats, StatementReturn *rstat) : declarations(declarations), statements(stats), rstat(rstat) {}
+      Function(vector<Declaration *> *declarations, vector<Statement *> *stats, StatementReturn *rstat);
       string toString()
       {
             string result = "Function = { \n";
@@ -23,8 +23,11 @@ class Function
 
             return result += "rstat : " + rstat->toString() + "}\n";
       }
+      void buildASM(ostream &o);
 
       vector<Declaration *> *declarations;
       vector<Statement *> *statements;
       StatementReturn *rstat;
+      map <string, int> SymbolIndex;
+      int lastOffset = 0;
 };

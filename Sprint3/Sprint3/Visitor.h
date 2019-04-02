@@ -19,17 +19,17 @@ class Visitor : public Grammar3BaseVisitor
 
       virtual antlrcpp::Any visitMain(Grammar3Parser::MainContext *ctx) override
       {
-            Declaration *decl;
+            vector<Declaration *> *subList;
 
             vector<Declaration *> *declList = new vector<Declaration *>(0);
-            cout << "2.1" << endl;
             for (int i = 0; i < ctx->declaration().size(); i++)
             {
-                  decl = (Declaration *)visit(ctx->declaration(i));
-                  declList->push_back(decl);
+                  subList = (vector<Declaration *> *)visit(ctx->declaration(i));
+                  for (Declaration *decl : *subList)
+                  {
+                        declList->push_back(decl);
+                  }
             }
-            cout << "2.2" << endl;
-
             Statement *stat;
             vector<Statement *> *statList = new vector<Statement *>(0);
             for (int i = 0; i < ctx->stat().size(); i++)
@@ -37,31 +37,43 @@ class Visitor : public Grammar3BaseVisitor
                   stat = (Statement *)visit(ctx->stat(i));
                   statList->push_back(stat);
             }
-            cout << "2.3" << endl;
 
             StatementReturn *rstat = (StatementReturn *)visit(ctx->rstat());
-
-            cout << "2.4" << endl;
 
             return (Function *)new Function(declList, statList, rstat);
       }
 
+      virtual antlrcpp::Any visitDeclaration(Grammar3Parser::DeclarationContext *ctx) override
+      {
+            Declaration *decl;
+            vector<Declaration *> *declList = new vector<Declaration *>(0);
+            for (int i = 0; i < ctx->variableList().size(); i++)
+            {
+                  decl = (Declaration *)visit(ctx->variableList(i));
+                  declList->push_back(decl);
+            }
+
+            decl = (Declaration *)visit(ctx->variable());
+            declList->push_back(decl);
+
+            return (vector<Declaration *> *)declList;
+      }
+
+      virtual antlrcpp::Any visitVariableList(Grammar3Parser::VariableListContext *ctx) override
+      {
+            return (Declaration *)visit(ctx->variable());
+      }
+
       virtual antlrcpp::Any visitDecl(Grammar3Parser::DeclContext *ctx) override
       {
-
             ExpressionVar *var = new ExpressionVar(ctx->ID()->getText().c_str());
-
             return (Declaration *)new Declaration(var);
       }
 
       virtual antlrcpp::Any visitInit(Grammar3Parser::InitContext *ctx) override
       {
-
-            cout << "2.1.1" << endl;
             Expression *right = visit(ctx->expr());
-            cout << "2.1.2" << endl;
             ExpressionVar *left = new ExpressionVar(ctx->ID()->getText().c_str());
-            cout << "2.1.3" << endl;
 
             Declaration *declaration = new Declaration(left, right);
             return (Declaration *)declaration;
@@ -86,14 +98,7 @@ class Visitor : public Grammar3BaseVisitor
             Expression *left = (Expression *)visit(ctx->expr(0));
             Expression *right = (Expression *)visit(ctx->expr(1));
 
-            if (ctx->MULTDIV()->getText().compare("*") == 0)
-            {
-                  return (Expression *)new ExpressionMult(left, right);
-            }
-            else
-            {
-                  return (Expression *)new ExpressionDiv(left, right);
-            }
+            return (Expression *)new ExpressionMult(left, right);
       }
 
       virtual antlrcpp::Any visitPlusminus(Grammar3Parser::PlusminusContext *ctx) override
@@ -113,15 +118,13 @@ class Visitor : public Grammar3BaseVisitor
 
       virtual antlrcpp::Any visitConst(Grammar3Parser::ConstContext *ctx) override
       {
-            cout << "2.1.2.1" << endl;
             ExpressionConst *val = new ExpressionConst((int)stoi(ctx->INT()->getText()));
-            cout << "2.1.2.2" << endl;
             return (Expression *)val;
       }
 
       virtual antlrcpp::Any visitVar(Grammar3Parser::VarContext *ctx) override
       {
-            return (Expression*)new ExpressionVar(ctx->ID()->getText().c_str());
+            return (Expression *)new ExpressionVar(ctx->ID()->getText().c_str());
       }
 
       virtual antlrcpp::Any visitPar(Grammar3Parser::ParContext *ctx) override
