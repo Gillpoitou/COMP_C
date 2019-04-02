@@ -9,6 +9,7 @@
             "sstream": "cpp",
             "ostream": "cpp",
             "ios": "cpp",
-            "__locale": "cpp"
+            "__locale": "cpp",
+            "utility": "cpp"
       }
 }

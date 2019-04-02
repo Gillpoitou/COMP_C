@@ -1,12 +1,6 @@
 int main(){
-      int abc = 3;
-      int bde = 4;
-      int cde = abc;
-      int def;
-      int ghi;
-
-      def=abc;
-      ghi = (abc + bde)*4*(abc-def);
-
-      return ghi / 4;
+      int abc = 1;
+      int ghi = 2;
+      int def = 3+3+3+3+3;
+      return def;
 }
