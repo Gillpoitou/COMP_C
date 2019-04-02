@@ -1,5 +1,7 @@
 int main(){
-      int ac = 2,bc,cc = 8;
-      bc = ac + cc;
-      return bc;
+
+      int abc = 1;
+      int ghi = 2;
+      int def = 3+3+3+3+3;
+      return def;
 }

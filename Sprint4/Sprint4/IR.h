@@ -13,7 +13,7 @@ using namespace std;
 //#include "symbole.h"
 class BasicBlock;
 class CFG;
-class DefFonction;
+class Function;
 
 
 //! The class for one 3-address instruction
@@ -31,7 +31,8 @@ class IRInstr {
 		call, 
 		cmp_eq,
 		cmp_lt,
-		cmp_le
+		cmp_le,
+		ret
 	} Operation;
 
 
@@ -67,6 +68,7 @@ class IRInstr {
 class BasicBlock {
  public:
 	BasicBlock(CFG* cfg, string entry_label);
+
 	void gen_asm(ostream &o); /**< x86 assembly code generation for this basic block (very simple) */
 
 	void add_IRInstr(IRInstr::Operation op, Type t, vector<string> params);
@@ -96,9 +98,9 @@ class BasicBlock {
  */
 class CFG {
  public:
-	CFG(DefFonction* ast);
+	CFG(Function* ast);
 
-	DefFonction* ast; /**< The AST this CFG comes from */
+	Function* ast; /**< The AST this CFG comes from */
 	
 	void add_bb(BasicBlock* bb); 
 
@@ -121,7 +123,7 @@ class CFG {
  protected:
 	map <string, Type> SymbolType; /**< part of the symbol table  */
 	map <string, int> SymbolIndex; /**< part of the symbol table  */
-	int nextFreeSymbolIndex; /**< to allocate new symbols in the symbol table */
+	int nextFreeSymbolIndex=4; /**< to allocate new symbols in the symbol table */
 	int nextBBnumber; /**< just for naming */
 	
 	vector <BasicBlock*> bbs; /**< all the basic blocks of this CFG*/

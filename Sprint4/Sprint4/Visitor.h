@@ -86,14 +86,7 @@ class Visitor : public Grammar3BaseVisitor
             Expression *left = (Expression *)visit(ctx->expr(0));
             Expression *right = (Expression *)visit(ctx->expr(1));
 
-            if (ctx->MULTDIV()->getText().compare("*") == 0)
-            {
-                  return (Expression *)new ExpressionMult(left, right);
-            }
-            else
-            {
-                  return (Expression *)new ExpressionDiv(left, right);
-            }
+            return (Expression *)new ExpressionMult(left, right);
       }
 
       virtual antlrcpp::Any visitPlusminus(Grammar3Parser::PlusminusContext *ctx) override

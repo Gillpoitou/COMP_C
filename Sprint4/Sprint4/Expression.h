@@ -4,6 +4,7 @@
 #include <string>
 #include <sstream>
 using namespace std;
+class CFG;
 
 class Expression
 {
@@ -12,6 +13,9 @@ class Expression
       {
             return "";
       };
+      virtual string build_IR(CFG*){
+            return "";
+      }
 };
 
 class ExpressionConst : public Expression
@@ -25,6 +29,7 @@ class ExpressionConst : public Expression
             ss << value;
             return "ExpressionConst = { value : " + ss.str() + " } \n";
       }
+      string build_IR(CFG*);
       int value;
 };
 
@@ -37,7 +42,7 @@ class ExpressionVar : public Expression
       {
             return "ExpressionVar = { name : " + name + "}\n";
       }
-
+      string build_IR(CFG*);
       string name;
 };
 
@@ -50,6 +55,7 @@ class ExpressionPar : public Expression
       {
             return "ExpressionPar = { value : " + value->toString() + "}\n";
       }
+      string build_IR(CFG*);
 };
 
 class ExpressionBinary : public Expression
@@ -60,6 +66,7 @@ class ExpressionBinary : public Expression
 
       ExpressionBinary(Expression *left, Expression *right) : right(right), left(left) {}
       virtual string toString() = 0;
+      string build_IR(CFG*);
 };
 
 class ExpressionPlus : public ExpressionBinary
@@ -70,6 +77,7 @@ class ExpressionPlus : public ExpressionBinary
       {
             return "ExpressionPlus = { right : " + right->toString() + ", left : " + left->toString() + "\n";
       }
+      string build_IR(CFG*);
 };
 
 class ExpressionMinus : public ExpressionBinary
@@ -80,6 +88,7 @@ class ExpressionMinus : public ExpressionBinary
       {
             return "ExpressionMinus = { right : " + right->toString() + ", left : " + left->toString() + "\n";
       }
+      string build_IR(CFG*);
 };
 
 class ExpressionMult : public ExpressionBinary
@@ -90,16 +99,7 @@ class ExpressionMult : public ExpressionBinary
       {
             return "ExpressionMult = { right : " + right->toString() + ", left : " + left->toString() + "\n";
       }
-};
-
-class ExpressionDiv : public ExpressionBinary
-{
-    public:
-      ExpressionDiv(Expression *left, Expression *right): ExpressionBinary(left, right){}
-      virtual string toString()
-      {
-            return "ExpressionDiv = { right : " + right->toString() + ", left : " + left->toString() + "\n";
-      }
+      string build_IR(CFG*);
 };
 
 #endif
