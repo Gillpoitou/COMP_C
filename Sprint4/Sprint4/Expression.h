@@ -102,15 +102,4 @@ class ExpressionMult : public ExpressionBinary
       string build_IR(CFG*);
 };
 
-class ExpressionDiv : public ExpressionBinary
-{
-    public:
-      ExpressionDiv(Expression *left, Expression *right): ExpressionBinary(left, right){}
-      virtual string toString()
-      {
-            return "ExpressionDiv = { right : " + right->toString() + ", left : " + left->toString() + "\n";
-      }
-      string build_IR(CFG*);
-};
-
 #endif

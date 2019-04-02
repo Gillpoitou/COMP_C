@@ -20,34 +20,17 @@ void IRInstr::gen_asm(ostream &o){
             }
         case Operation::add:
         {
-            string destination = params[0].substr(4);
-            string source1 = "";
-            string source2 = "";
-            if (params[1].substr(0,1).compare("!") == 0){
-                  string source1 = params[1].substr(4);
-                  o << "movq -" + source1 + "(%rbp),    %rax" << endl;
-            }else{
-                  //get from ST
-                  string index = to_string(bb->cfg->get_var_index(params[1]));
-                  
-                  o << "movq -" + index + "(%rbp),    %rax       #offset of " + params[1] + " is -" + index << endl;
-            }
-
-            if (params[2].substr(0,1).compare("!") == 0){
-                  string source2 = params[2].substr(4);
-                  o << "addq -" + source2 + "(%rbp),    %rax" << endl;
-            }else{
-                  //get from ST
-                  string index = to_string(bb->cfg->get_var_index(params[2]));
-                  o << "addq -" + index + "(%rbp),    %rax       #offset of " + params[2] + " is -" + index << endl;
-            }
-
-            o << "movq %rax,        -" + destination + "(%rbp)" << endl;
+	    o << "movl -" << this->bb->cfg->get_var_index(params[1]) << "(%rbp), %edx" << endl;
+      	    o << "movl -" << this->bb->cfg->get_var_index(params[2]) << "(%rbp), %eax" << endl;
+            o << "addl %edx, %eax" << endl;
+	    o << "movl %eax, -" << this->bb->cfg->get_var_index(params[0]) << "(%rbp)" << endl;
             
             break;
             }
         case sub:
-
+	    o << "movl -" << this->bb->cfg->get_var_index(params[1]) << "(%rbp), %eax" << endl;
+      	    o << "subl -" << this->bb->cfg->get_var_index(params[2]) << "(%rbp), %eax" << endl;
+	    o << "movl %eax, -" << this->bb->cfg->get_var_index(params[0]) << "(%rbp)" << endl;
             break;
 	case mul:
 
@@ -71,8 +54,6 @@ void IRInstr::gen_asm(ostream &o){
 	case cmp_le:
 
             break;
-	case decl:
-	    break;
 	case ret:
 	  o << "movl -" << this->bb->cfg->get_var_index(params[0]) << "(%rbp), %eax" << endl;
       default:
