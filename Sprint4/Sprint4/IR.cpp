@@ -71,6 +71,8 @@ void IRInstr::gen_asm(ostream &o){
 	case cmp_le:
 
             break;
+	case decl:
+	    break;
 	case ret:
 	  o << "movl -" << this->bb->cfg->get_var_index(params[0]) << "(%rbp), %eax" << endl;
       default:
