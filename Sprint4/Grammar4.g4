@@ -49,7 +49,7 @@ expr: expr MULT expr # mult
 rtype: type
     | 'void'
     ;
-type: 'int'
+type: 'int' #typeINT
     ;
 
 // ------------- terminals
