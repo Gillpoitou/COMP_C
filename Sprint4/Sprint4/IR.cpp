@@ -45,7 +45,12 @@ void IRInstr::gen_asm(ostream &o){
            o << "movl %eax, -" << this->bb->cfg->get_var_index(params[0]) << "(%rbp)" << endl;
             break;
 	case call:
+            for(int i = 2 ; i < params.size() ; i ++){
+                  if(i > 7) break;
+                 o << "movl   -" << this->bb->cfg->get_var_index(params[i]) << "(%rpb),%" << registers[i-2] << endl;
+            }
             o << "call  " << params[0] << endl;
+            o << "movl  %eax,-" << this->bb->cfg->get_var_index(params[1]) << "(%rpb)" << endl;
             break;
 	case cmp_eq:
 
