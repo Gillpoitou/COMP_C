@@ -29,5 +29,5 @@ class Function
       vector<Declaration *> *declarations;
       vector<Statement *> *statements;
       StatementReturn *rstat;
-      string name = "main";
+      string name;
 };

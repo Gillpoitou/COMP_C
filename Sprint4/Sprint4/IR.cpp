@@ -114,9 +114,9 @@ string CFG::IR_reg_to_asm(string reg){
 }
 
 void CFG::gen_asm_prologue(ostream& o){
-      o << ".text" << endl;
-      o << ".global main" << endl;
-      o << "main:" << endl;
+      /*o << ".text" << endl;
+      o << ".global main" << endl;*/
+      o << this->ast->name << ":" << endl;
       o << "pushq %rbp" << endl;
       o << "movq    %rsp, %rbp" << endl;
 }
