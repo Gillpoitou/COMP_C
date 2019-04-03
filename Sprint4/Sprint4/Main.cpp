@@ -1,9 +1,9 @@
 #include <iostream>
 #include "antlr4-runtime.h"
-#include "Grammar3Lexer.h"
+#include "Grammar4Lexer.h"
 
-#include "Grammar3Parser.h"
-#include "Grammar3BaseVisitor.h"
+#include "Grammar4Parser.h"
+#include "Grammar4BaseVisitor.h"
 #include "Visitor.h"
 
 // #include "Function.h"
@@ -29,9 +29,9 @@ int main(int argc, char *argv[])
 
             //cout << "1" << endl;
             ANTLRInputStream input(content);
-            Grammar3Lexer lexer(&input);
+            Grammar4Lexer lexer(&input);
             CommonTokenStream tokens(&lexer);
-            Grammar3Parser parser(&tokens);
+            Grammar4Parser parser(&tokens);
             tree::ParseTree *tree = parser.prog();
             //cout << tree->toStringTree() << endl;
             Visitor visitor;

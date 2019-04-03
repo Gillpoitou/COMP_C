@@ -1,6 +1,5 @@
 int main(){
       int abc = 3*5 + 7*(6-3);
-
-
+      
       return abc;
 }

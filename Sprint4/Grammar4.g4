@@ -37,7 +37,7 @@ stat: ID '=' expr ';'   #asgn
     ;
 
 // ------------- expressions
-expr: expr MULTDIV expr # multdiv
+expr: expr MULT expr # mult
     | expr PLUSMINUS expr # plusminus
     | INT           # const
     | ID            # var
@@ -53,7 +53,7 @@ type: 'int'
     ;
 
 // ------------- terminals
-MULTDIV: [*/];
+MULT: [*];
 PLUSMINUS: [+-];
 INT: [0-9]+;
 ID: [a-zA-Z][a-zA-Z0-9]+;
