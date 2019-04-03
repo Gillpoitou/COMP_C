@@ -5,7 +5,7 @@
 #include <iostream>
 
 #include "antlr4-runtime.h"
-#include "Grammar3BaseVisitor.h"
+#include "Grammar4BaseVisitor.h"
 #include "Function.h"
 
 using namespace std;
@@ -39,13 +39,13 @@ class Visitor : public Grammar3BaseVisitor
             Declaration *decl;
 
             vector<Declaration *> *declList = new vector<Declaration *>(0);
-            cout << "2.1" << endl;
+            //cout << "2.1" << endl;
             for (int i = 0; i < ctx->declaration().size(); i++)
             {
                   decl = (Declaration *)visit(ctx->declaration(i));
                   declList->push_back(decl);
             }
-            cout << "2.2" << endl;
+            //cout << "2.2" << endl;
 
             Statement *stat;
             vector<Statement *> *statList = new vector<Statement *>(0);
@@ -54,13 +54,13 @@ class Visitor : public Grammar3BaseVisitor
                   stat = (Statement *)visit(ctx->stat(i));
                   statList->push_back(stat);
             }
-            cout << "2.3" << endl;
+            //cout << "2.3" << endl;
 
             StatementReturn *rstat = (StatementReturn *)visit(ctx->rstat());
 
-            cout << "2.4" << endl;
+            //cout << "2.4" << endl;
 
-            return (MainFunction *)new MainFunction(declList, statList, rstat);
+            return (Function *)new Function(declList, statList, rstat, );     //TODO
       }
 
       virtual antlrcpp::Any visitDecl(Grammar3Parser::DeclContext *ctx) override
