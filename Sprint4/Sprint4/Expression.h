@@ -3,6 +3,7 @@
 
 #include <string>
 #include <sstream>
+#include <vector>
 #include "Type.h"
 
 using namespace std;
@@ -65,9 +66,9 @@ class ExpressionPar : public Expression
 class ExpressionCall : public Expression
 {
     public:
-      ExpressionCall(string calledFuncName, vector<Expression*> *params) : calledFuncName(calledFuncName), params(params) {}
+      ExpressionCall(string calledFuncName, vector<Expression*> *func_params) : calledFuncName(calledFuncName), func_params(func_params) {}
       string calledFuncName;
-      vector<Expression*> *params;
+      vector<Expression*> *func_params;
       virtual string toString()
       {
             return "ExpressionCall = { calledFuncName : " + calledFuncName + "}\n";

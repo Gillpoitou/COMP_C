@@ -1,5 +1,6 @@
 #include "IR.h"
 #include "Function.h"
+#include "Expression.h"
 #include <iostream>
 
 //------------IRInstr
@@ -47,7 +48,7 @@ void IRInstr::gen_asm(ostream &o){
 	case call:
             for(int i = 2 ; i < params.size() ; i ++){
                   if(i > 7) break;
-                 o << "movl   -" << this->bb->cfg->get_var_index(params[i]) << "(%rpb),%" << registers[i-2] << endl;
+                 o << "movl   -" << this->bb->cfg->get_var_index(params[i]) << "(%rpb),%" << this->bb->cfg->registers[i-2] << endl;
             }
             o << "call  " << params[0] << endl;
             o << "movl  %eax,-" << this->bb->cfg->get_var_index(params[1]) << "(%rpb)" << endl;
@@ -124,6 +125,11 @@ void CFG::gen_asm_prologue(ostream& o){
       o << this->ast->name << ":" << endl;
       o << "pushq %rbp" << endl;
       o << "movq    %rsp, %rbp" << endl;
+      for(int i = 0 ; i < this->ast->params->size() ; i++){
+
+            string name = ast->params->at(i)->name;
+             o << "movl   %"<< registers[i] << ",-" << get_var_index(name) << "(%rpb)" << endl;
+      }
 }
 
 void CFG::gen_asm_epilogue(ostream& o){

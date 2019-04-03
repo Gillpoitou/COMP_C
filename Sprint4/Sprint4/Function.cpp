@@ -3,7 +3,7 @@
 void Function::build_IR(CFG* ir_cfg){
 
     BasicBlock* first_bb = new BasicBlock(ir_cfg,this->name);
-
+//TODO add param to symbol table
     ir_cfg->add_bb(first_bb);
     ir_cfg->current_bb = first_bb;
 	

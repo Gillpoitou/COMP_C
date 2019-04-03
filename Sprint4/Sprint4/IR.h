@@ -48,7 +48,7 @@ class IRInstr {
 	Type t;
 	vector<string> params; /**< For 3-op instrs: d, x, y; for ldconst: d, c;  For call: label, d, params;  for wmem and rmem: choose yourself */
 	// if you subclass IRInstr, each IRInstr subclass has its parameters and the previous (very important) comment becomes useless: it would be a better design. 
-	char registers[6][4] = {"edi","esi","edx","ecx","r8d","r9d"};
+	
 };
 
 
@@ -120,6 +120,7 @@ class CFG {
 	// basic block management
 	string new_BB_name();
 	BasicBlock* current_bb;
+	char registers[6][4] = {"edi","esi","edx","ecx","r8d","r9d"};
 
  protected:
 	map <string, Type> SymbolType; /**< part of the symbol table  */
@@ -128,6 +129,7 @@ class CFG {
 	int nextBBnumber; /**< just for naming */
 	
 	vector <BasicBlock*> bbs; /**< all the basic blocks of this CFG*/
+	
 };
 
 
