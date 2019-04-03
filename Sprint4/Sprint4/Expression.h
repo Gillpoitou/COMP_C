@@ -11,6 +11,9 @@ class CFG;
 class Expression
 {
     public:
+      Type type;
+      Expression();
+      Expression(Type type) : type(type) {}
       virtual string toString()
       {
             return "";
@@ -24,7 +27,7 @@ class Expression
 class ExpressionConst : public Expression
 {
     public:
-      ExpressionConst(int value) : value(value) {}
+      ExpressionConst(Type type, int value) : Expression(type), value(value) {}
 
       virtual string toString()
       {
@@ -40,6 +43,7 @@ class ExpressionVar : public Expression
 {
     public:
       ExpressionVar(string name) : name(name) {}
+      ExpressionVar(Type type, string name) : Expression(type), name(name) {}
 
       virtual string toString()
       {
@@ -47,14 +51,13 @@ class ExpressionVar : public Expression
       }
       string build_IR(CFG *);
       string name;
-      Type type;
 };
 
 class ExpressionPar : public Expression
 {
     public:
       Expression *value;
-      ExpressionPar(Expression *value) : value(value) {}
+      ExpressionPar(Type type, Expression *value) : Expression(type), value(value) {}
       virtual string toString()
       {
             return "ExpressionPar = { value : " + value->toString() + "}\n";
@@ -65,9 +68,9 @@ class ExpressionPar : public Expression
 class ExpressionCall : public Expression
 {
     public:
-      ExpressionCall(string calledFuncName, vector<Expression*> *params) : calledFuncName(calledFuncName), params(params) {}
+      ExpressionCall(Type type, string calledFuncName, vector<Expression *> *params) : Expression(type), calledFuncName(calledFuncName), params(params) {}
       string calledFuncName;
-      vector<Expression*> *params;
+      vector<Expression *> *params;
       virtual string toString()
       {
             return "ExpressionCall = { calledFuncName : " + calledFuncName + "}\n";
@@ -81,7 +84,7 @@ class ExpressionBinary : public Expression
       Expression *right;
       Expression *left;
 
-      ExpressionBinary(Expression *left, Expression *right) : right(right), left(left) {}
+      ExpressionBinary(Type type, Expression *left, Expression *right) : Expression(type), right(right), left(left) {}
       virtual string toString() = 0;
       string build_IR(CFG *);
 };
@@ -89,7 +92,7 @@ class ExpressionBinary : public Expression
 class ExpressionPlus : public ExpressionBinary
 {
     public:
-      ExpressionPlus(Expression *left, Expression *right) : ExpressionBinary(left, right) {}
+      ExpressionPlus(Type type, Expression *left, Expression *right) : ExpressionBinary(type, left, right) {}
       virtual string toString()
       {
             return "ExpressionPlus = { right : " + right->toString() + ", left : " + left->toString() + "\n";
@@ -100,7 +103,7 @@ class ExpressionPlus : public ExpressionBinary
 class ExpressionMinus : public ExpressionBinary
 {
     public:
-      ExpressionMinus(Expression *left, Expression *right) : ExpressionBinary(left, right) {}
+      ExpressionMinus(Type type, Expression *left, Expression *right) : ExpressionBinary(type, left, right) {}
       virtual string toString()
       {
             return "ExpressionMinus = { right : " + right->toString() + ", left : " + left->toString() + "\n";
@@ -111,7 +114,7 @@ class ExpressionMinus : public ExpressionBinary
 class ExpressionMult : public ExpressionBinary
 {
     public:
-      ExpressionMult(Expression *left, Expression *right) : ExpressionBinary(left, right) {}
+      ExpressionMult(Type type, Expression *left, Expression *right) : ExpressionBinary(type, left, right) {}
       virtual string toString()
       {
             return "ExpressionMult = { right : " + right->toString() + ", left : " + left->toString() + "\n";

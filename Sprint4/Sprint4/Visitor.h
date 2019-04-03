@@ -62,22 +62,38 @@ class Visitor : public Grammar4BaseVisitor
             return (Function *)new Function(rtype, "main", params, declList, statList, rstat);
       }
 
+      virtual antlrcpp::Any visitDeclaration(Grammar4Parser::DeclarationContext *ctx) override
+      {
+            vector<Declaration *> *decls = new vector<Declaration *>(0);
+            Type type = (Type)visit(ctx->type());
+
+            vector<Declaration *> *decls = (vector<Declaration *> *)visit(ctx->variables());
+
+            for(Declaration * d : *decls){
+                  d->left->type = type;
+            }
+
+            return (vector<Declaration *> * )decls;
+      }
+
+      virtual antlrcpp::Any visitVariables(Grammar4Parser::VariablesContext *ctx) override
+      {
+            vector<Declaration *> *decls = (vector<Declaration *> *)visit(ctx->variables());
+            Declaration *d = (Declaration *)visit(ctx->variable());
+            decls->insert(decls->begin(), d);
+            return (vector<Declaration *> *)decls;
+      }
+
       virtual antlrcpp::Any visitDecl(Grammar4Parser::DeclContext *ctx) override
       {
-
             ExpressionVar *var = new ExpressionVar(ctx->ID()->getText().c_str());
-
             return (Declaration *)new Declaration(var);
       }
 
       virtual antlrcpp::Any visitInit(Grammar4Parser::InitContext *ctx) override
       {
-
-            cout << "2.1.1" << endl;
             Expression *right = visit(ctx->expr());
-            cout << "2.1.2" << endl;
             ExpressionVar *left = new ExpressionVar(ctx->ID()->getText().c_str());
-            cout << "2.1.3" << endl;
 
             Declaration *declaration = new Declaration(left, right);
             return (Declaration *)declaration;
@@ -137,5 +153,10 @@ class Visitor : public Grammar4BaseVisitor
       {
             Expression *expression = (Expression *)visit(ctx->expr());
             return (Expression *)new ExpressionPar(expression);
+      }
+
+      virtual antlrcpp::Any visitTypeINT(Grammar4Parser::TypeINTContext *ctx) override
+      {
+            return (Type)INT;
       }
 };
