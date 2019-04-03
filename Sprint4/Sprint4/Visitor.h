@@ -35,6 +35,27 @@ class Visitor : public Grammar4BaseVisitor
             return visitChildren(ctx);
       }
 
+      virtual antlrcpp::Any visitFncall(Grammar4Parser::FncallContext *ctx) override 
+      {
+            //check  params match formal params of the func
+            //check  give a the return type to the expr
+            //check the function exists
+
+            ExpressionCall *call;
+            vector<Expression *> *params;
+
+            params = (vector<Expression *>)visit(ctx->dparams());
+            
+            if (params == null){
+                  params = new vector<Expression *>(0);
+            }
+
+            //TODO get the rtype of the func in atype
+            call = new ExpressionCall(atype, ctx->ID()->getText().c_str(), params);
+
+            return call;
+      }
+
       virtual antlrcpp::Any visitMain(Grammar4Parser::MainContext *ctx) override
       {
             vector<Declaration *> *subList;
