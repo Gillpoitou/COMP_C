@@ -1,5 +1,12 @@
+void toto(){
+      int a = 3;
+}
+
+
 int main(){
-      int abc = 3*5 + 7*(6-3);
-      
-      return abc;
+      int x = 1;
+      int y = 2;
+      int z = 3;
+      toto();
+      return 0;
 }
