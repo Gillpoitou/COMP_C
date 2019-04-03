@@ -4,11 +4,11 @@ grammar Grammar4;
 prog: funcdef* main;
 
 // ------------- functions
-main: 'int' 'main' '(' ')' '{' declaration* stats* rstat '}'
+main: 'int' 'main' '(' ')' '{' declaration* stat* rstat'}'
     ;
-funcdef: rtype ID '(' dparamlist ')' '{' declaration* stats+ '}'
+funcdef: rtype ID '(' dparamlist ')' '{' declaration* stat* rstat?'}'
     ;
-fncall: ID '.' ID '(' cparamlist ')'
+fncall: ID '(' cparamlist ')'
     ;
 
 // ------------- functions params
@@ -36,9 +36,6 @@ variable: ID #decl
       ;
 
 // ------------- statements
-stats: stat
-    | rstat
-    ;
 rstat: 'return' expr ';';
 stat: ID '=' expr ';'   #asgn
     | fncall ';'        #callnr
