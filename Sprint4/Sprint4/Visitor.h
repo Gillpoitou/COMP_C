@@ -14,7 +14,24 @@ class Visitor : public Grammar3BaseVisitor
     public:
       virtual antlrcpp::Any visitProg(Grammar3Parser::ProgContext *ctx) override
       {
-            return visitChildren(ctx);
+            Function *f;
+            pair<string, Function> p;
+
+            map<Function*> *funcList = new map<Function *>(0);
+            for (int i = 0; i < ctx->funcdef().size(); i++)
+            {
+                  f = (Function *)visit(ctx->funcdef(i));
+                  
+                  funcList.insert(pair<string, Function *>(f->name, f);
+            }
+            Function *mainf = (Function *)visit(ctx->main());
+            funcList.insert(pair<string, Function *>(mainf->name, mainf);
+            return (Prog *)new Prog(funcList);
+      }
+
+      virtual antlrcpp::Any visitFuncdef(Grammar3Parser::MainContext *ctx) override
+      {
+
       }
 
       virtual antlrcpp::Any visitMain(Grammar3Parser::MainContext *ctx) override
@@ -43,7 +60,7 @@ class Visitor : public Grammar3BaseVisitor
 
             cout << "2.4" << endl;
 
-            return (Function *)new Function(declList, statList, rstat);
+            return (MainFunction *)new MainFunction(declList, statList, rstat);
       }
 
       virtual antlrcpp::Any visitDecl(Grammar3Parser::DeclContext *ctx) override
@@ -86,7 +103,14 @@ class Visitor : public Grammar3BaseVisitor
             Expression *left = (Expression *)visit(ctx->expr(0));
             Expression *right = (Expression *)visit(ctx->expr(1));
 
-            return (Expression *)new ExpressionMult(left, right);
+            if (ctx->MULTDIV()->getText().compare("*") == 0)
+            {
+                  return (Expression *)new ExpressionMult(left, right);
+            }
+            else
+            {
+                  return (Expression *)new ExpressionDiv(left, right);
+            }
       }
 
       virtual antlrcpp::Any visitPlusminus(Grammar3Parser::PlusminusContext *ctx) override
