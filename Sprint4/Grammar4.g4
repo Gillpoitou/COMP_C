@@ -6,28 +6,23 @@ prog: funcdef* main;
 // ------------- functions
 main: 'int' 'main' '(' ')' '{' declaration* stat* rstat'}'
     ;
-funcdef: rtype ID '(' dparamlist ')' '{' declaration* stat* rstat?'}'
+funcdef: rtype ID '(' dparams? ')' '{' declaration* stat* rstat?'}'
     ;
-fncall: ID '(' cparamlist ')'
+fncall: ID '(' cparams? ')'
     ;
 
 // ------------- functions params
-dparamlist: dparams?
-    ;
 dparams: dparam ',' dparams
     | dparam
     ;
 dparam: type ID
-    ;
-cparamlist: cparams?
     ;
 cparams: expr ',' cparams
     | expr
     ;
 
 // ------------- variables
-declaration: type variableList ';' ;
-variableList: variables ;
+declaration: type variables ';' ;
 variables: variable ',' variables 
       | variable
       ;
