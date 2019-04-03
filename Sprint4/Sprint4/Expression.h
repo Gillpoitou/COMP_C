@@ -3,6 +3,8 @@
 
 #include <string>
 #include <sstream>
+#include "Type.h"
+
 using namespace std;
 class CFG;
 
@@ -13,7 +15,8 @@ class Expression
       {
             return "";
       };
-      virtual string build_IR(CFG*){
+      virtual string build_IR(CFG *)
+      {
             return "";
       }
 };
@@ -29,7 +32,7 @@ class ExpressionConst : public Expression
             ss << value;
             return "ExpressionConst = { value : " + ss.str() + " } \n";
       }
-      string build_IR(CFG*);
+      string build_IR(CFG *);
       int value;
 };
 
@@ -42,8 +45,9 @@ class ExpressionVar : public Expression
       {
             return "ExpressionVar = { name : " + name + "}\n";
       }
-      string build_IR(CFG*);
+      string build_IR(CFG *);
       string name;
+      Type type;
 };
 
 class ExpressionPar : public Expression
@@ -55,7 +59,20 @@ class ExpressionPar : public Expression
       {
             return "ExpressionPar = { value : " + value->toString() + "}\n";
       }
-      string build_IR(CFG*);
+      string build_IR(CFG *);
+};
+
+class ExpressionCall : public Expression
+{
+    public:
+      ExpressionCall(string calledFuncName, vector<Expression*> *params) : calledFuncName(calledFuncName), params(params) {}
+      string calledFuncName;
+      vector<Expression*> *params;
+      virtual string toString()
+      {
+            return "ExpressionCall = { calledFuncName : " + calledFuncName + "}\n";
+      }
+      string build_IR(CFG *);
 };
 
 class ExpressionBinary : public Expression
@@ -66,40 +83,40 @@ class ExpressionBinary : public Expression
 
       ExpressionBinary(Expression *left, Expression *right) : right(right), left(left) {}
       virtual string toString() = 0;
-      string build_IR(CFG*);
+      string build_IR(CFG *);
 };
 
 class ExpressionPlus : public ExpressionBinary
 {
     public:
-      ExpressionPlus(Expression *left, Expression *right): ExpressionBinary(left, right){}
+      ExpressionPlus(Expression *left, Expression *right) : ExpressionBinary(left, right) {}
       virtual string toString()
       {
             return "ExpressionPlus = { right : " + right->toString() + ", left : " + left->toString() + "\n";
       }
-      string build_IR(CFG*);
+      string build_IR(CFG *);
 };
 
 class ExpressionMinus : public ExpressionBinary
 {
     public:
-      ExpressionMinus(Expression *left, Expression *right): ExpressionBinary(left, right){}
+      ExpressionMinus(Expression *left, Expression *right) : ExpressionBinary(left, right) {}
       virtual string toString()
       {
             return "ExpressionMinus = { right : " + right->toString() + ", left : " + left->toString() + "\n";
       }
-      string build_IR(CFG*);
+      string build_IR(CFG *);
 };
 
 class ExpressionMult : public ExpressionBinary
 {
     public:
-      ExpressionMult(Expression *left, Expression *right): ExpressionBinary(left, right){}
+      ExpressionMult(Expression *left, Expression *right) : ExpressionBinary(left, right) {}
       virtual string toString()
       {
             return "ExpressionMult = { right : " + right->toString() + ", left : " + left->toString() + "\n";
       }
-      string build_IR(CFG*);
+      string build_IR(CFG *);
 };
 
 #endif
