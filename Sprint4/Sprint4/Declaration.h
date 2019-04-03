@@ -2,6 +2,7 @@
 #include <string>
 
 using namespace std;
+class CFG;
 
 class Declaration
 {
@@ -17,6 +18,7 @@ class Declaration
                   }
             }
 
+            string build_IR(CFG *);
             ExpressionVar * left;
             Expression * right;
 };

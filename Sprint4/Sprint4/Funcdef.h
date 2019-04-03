@@ -9,7 +9,7 @@ class Funcdef
 {
       //TODO change everything 
     public:
-      MainFunction(vector<Declaration *> *declarations, vector<Statement *> *stats, StatementReturn *rstat) : declarations(declarations), statements(stats), rstat(rstat) {}
+      void MainFunction(vector<Declaration *> *declarations, vector<Statement *> *stats, StatementReturn *rstat) : declarations(declarations), statements(stats), rstat(rstat) {}
       string toString()
       {
             string result = "MainFunction = { \n";

@@ -3,6 +3,7 @@
 
 #include "Declaration.h"
 #include "Statement.h"
+#include "IR.h"
 using namespace std;
 
 class MainFunction
@@ -24,7 +25,10 @@ class MainFunction
             return result += "rstat : " + rstat->toString() + "}\n";
       }
 
+      void build_IR(CFG*);
       vector<Declaration *> *declarations;
       vector<Statement *> *statements;
       StatementReturn *rstat;
+      string name = "main";
 };
+
