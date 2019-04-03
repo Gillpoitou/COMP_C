@@ -1,6 +1,6 @@
-//#include "Function.h"
+#include "Function.h"
 
-/*void Function::build_IR(CFG* ir_cfg){
+void Function::build_IR(CFG* ir_cfg){
 
     BasicBlock* first_bb = new BasicBlock(ir_cfg,this->name);
 
@@ -18,4 +18,4 @@
 
       rstat->build_IR(ir_cfg);
 
-}*/
+}

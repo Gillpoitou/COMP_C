@@ -1,24 +1,24 @@
 #include <vector>
 #include <string>
 
-#include "Funcdef.h"
+#include "Function.h"
 using namespace std;
 
 class Prog
 {
     public:
-      Prog(vector<Funcdef *> *aFuncdefs, MainFunction *aMainfunc) : funcdefs(aFuncdefs), mainfunc(aMainfunc) {}
+      Prog();
       string toString()
       {
             string result = "Prog = { \n";
-            for (vector<Funcdef *>::iterator it = funcdefs->begin(); it != funcdefs->end(); ++it)
+            for (map<string,Function *>::iterator it = functions.begin(); it != functions.end(); ++it)
             {
-                  result += ((Funcdefs *)*it)->toString() + "\n";
+                  result += ((Function *) it->second)->toString() + "\n";
             }
 
-            return result += mainfunc->toString() + "}\n";
+           return result;
       }
 
-      vector<Funcdef *> *funcdefs;
-      MainFunction *mainfunc;
+      map<string, Function *> functions;
+  
 };
