@@ -9,13 +9,20 @@
 #include "Function.h"
 #include "Prog.h"
 #include "Type.h"
+#include "SymbAtt.h"
 
 using namespace std;
 class Visitor : public Grammar4BaseVisitor
 {
     public:
+
+      map<string, SymbAtt*> *symbTable;    //the symbol table
+
       virtual antlrcpp::Any visitProg(Grammar4Parser::ProgContext *ctx) override
       {
+            //creating the symbol table
+            symbTable = new map<string, SymbAtt*>();
+
             Function *f;
 
             map<string, Function *> *funcList = new map<string, Function *>();
@@ -51,9 +58,9 @@ class Visitor : public Grammar4BaseVisitor
             }
 
             //TODO get the rtype of the func in atype
-            call = new ExpressionCall(atype, ctx->ID()->getText().c_str(), params);
+            //call = new ExpressionCall(atype, ctx->ID()->getText().c_str(), params);
 
-            return call;
+            //return call;
       }
 
       virtual antlrcpp::Any visitMain(Grammar4Parser::MainContext *ctx) override
