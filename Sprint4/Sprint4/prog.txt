@@ -1,6 +1,11 @@
+int mult(int a, int b){
+      return a*b;
+}
+
 int main(){
-      int abc = 3*5 + 7*(6-3);
-
-
-      return abc;
+      int x = 1, tt = 0;
+      int y = 5;
+      int x = mult(mult(y,y), y) * y;
+      mult(3+3, 8);
+      return x;
 }

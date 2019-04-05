@@ -1,52 +1,60 @@
 grammar Grammar4;
+
+// ------------- prog
 prog: funcdef* main;
-funcdef: rtype ID '(' dparamlist ')' '{' declaration* stats+ '}'
+
+// ------------- functions
+main: 'int' 'main' '(' ')' '{' declaration* stat* rstat'}'
     ;
-main: 'int' 'main' '(' ')' '{' declaration* stat* rstat '}'
+funcdef: rtype ID '(' dparams? ')' '{' declaration* stat* rstat?'}'
     ;
-stats: stat
-    | rstat
+fncall: ID '(' cparams? ')'
     ;
-declaration: type ID ';' #decl
-    | type ID '=' expr ';' #init
+
+// ------------- functions params
+dparams: dparam ',' dparams
+    | dparam
     ;
+dparam: type ID
+    ;
+cparams: expr ',' cparams
+    | expr
+    ;
+
+// ------------- variables
+declaration: type variables ';' ;
+variables: variable ',' variables 
+      | variable
+      ;
+variable: ID #decl
+      | ID '=' expr #init
+      ;
+
+// ------------- statements
 rstat: 'return' expr ';';
 stat: ID '=' expr ';'   #asgn
     | fncall ';'        #callnr
     ;
-expr: expr MULTDIV expr # multdiv
+
+// ------------- expressions
+expr: expr MULT expr # mult
     | expr PLUSMINUS expr # plusminus
     | INT           # const
     | ID            # var
     | '(' expr ')'  # par
     | fncall        #callr
     ;
-fncall: ID '.' ID '(' cparamlist ')'
+
+// ------------- types
+rtype: type #rtypeTYPE
+    | 'void' #rtypeVOID
     ;
-dparamlist: dparams
-    |
-    ;
-dparams: dparam ',' dparams
-    | dparam
-    ;
-dparam: type ID
-    ;
-cparamlist: cparams
-    | 
-    ;
-cparams: expr ',' cparams
-    | expr
+type: 'int' #typeINT
     ;
 
-rtype: type
-    | 'void'
-    ;
-type: 'int'
-    ;
-
-MULTDIV: [*/];
+// ------------- terminals
+MULT: [*];
 PLUSMINUS: [+-];
 INT: [0-9]+;
-
-ID: [a-zA-Z][a-zA-Z0-9]+;
+ID: [a-zA-Z][a-zA-Z0-9]*;
 WS : [ \n\t\r] -> skip;

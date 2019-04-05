@@ -1,5 +1,6 @@
 #include "IR.h"
 #include "Function.h"
+#include "Expression.h"
 #include <iostream>
 
 //------------IRInstr
@@ -45,7 +46,12 @@ void IRInstr::gen_asm(ostream &o){
            o << "movl %eax, -" << this->bb->cfg->get_var_index(params[0]) << "(%rbp)" << endl;
             break;
 	case call:
-
+            for(int i = 2 ; i < params.size() ; i ++){
+                  if(i > 7) break;
+                 o << "movl   -" << this->bb->cfg->get_var_index(params[i]) << "(%rbp),%" << this->bb->cfg->registers[i-2] << endl;
+            }
+            o << "call  " << params[0] << endl;
+            o << "movl  %eax,-" << this->bb->cfg->get_var_index(params[1]) << "(%rbp)" << endl;
             break;
 	case cmp_eq:
 
@@ -106,6 +112,7 @@ void CFG::gen_asm(ostream& o){
             cbb->gen_asm(o);
       }
       gen_asm_epilogue(o);
+      o << endl;
 }
 
 string CFG::IR_reg_to_asm(string reg){
@@ -114,11 +121,14 @@ string CFG::IR_reg_to_asm(string reg){
 }
 
 void CFG::gen_asm_prologue(ostream& o){
-      o << ".text" << endl;
-      o << ".global main" << endl;
-      o << "main:" << endl;
+      o << this->ast->name << ":" << endl;
       o << "pushq %rbp" << endl;
       o << "movq    %rsp, %rbp" << endl;
+      for(int i = 0 ; i < this->ast->params->size() ; i++){
+
+            string name = ast->params->at(i)->name;
+             o << "movl   %"<< registers[i] << ",-" << get_var_index(name) << "(%rbp)" << endl;
+      }
 }
 
 void CFG::gen_asm_epilogue(ostream& o){

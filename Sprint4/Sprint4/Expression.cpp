@@ -59,3 +59,18 @@ string ExpressionPlus::build_IR(CFG* ir_cfg){
 string ExpressionVar::build_IR(CFG* ir_cfg){
     return name;
 }
+
+string ExpressionCall::build_IR(CFG* ir_cfg){
+
+    string var = ir_cfg->create_new_tempvar(INT);
+    vector<string> params;
+    params.push_back(calledFuncName);
+    params.push_back(var);
+
+    for(Expression* expr : *func_params){
+       string par_var = expr->build_IR(ir_cfg);
+       params.push_back(par_var);
+    }
+    ir_cfg->current_bb->add_IRInstr(IRInstr::Operation::call, INT, params);
+    return var;
+}

@@ -1,19 +1,19 @@
 #ifndef TYPE_H
 #define TYPE_H
 
-typedef enum{
+typedef enum
+{
+      INT,
+      VOID,
+      UNDEFINED
+} Type;
 
-    INT
-}Type;
-
-/*class Type{
-public:
-
-TypeName name;
-int size; //size of the type variable (byte)
-
-protected:
-};*/
-
+// class Type
+// {
+//     public:
+//       TypeName name;
+//       int size; //size of the type variable (byte)
+//     protected:
+// };
 
 #endif

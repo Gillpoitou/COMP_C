@@ -1,12 +1,12 @@
 #include <iostream>
 #include "antlr4-runtime.h"
-#include "Grammar3Lexer.h"
+#include "Grammar4Lexer.h"
 
-#include "Grammar3Parser.h"
-#include "Grammar3BaseVisitor.h"
+#include "Grammar4Parser.h"
+#include "Grammar4BaseVisitor.h"
 #include "Visitor.h"
 
-// #include "Function.h"
+#include "Prog.h"
 
 #include <iostream>
 #include <fstream>
@@ -27,24 +27,21 @@ int main(int argc, char *argv[])
             }
             myfile.close();
 
-            //cout << "1" << endl;
+            cout << "1" << endl;
             ANTLRInputStream input(content);
-            Grammar3Lexer lexer(&input);
+            Grammar4Lexer lexer(&input);
             CommonTokenStream tokens(&lexer);
-            Grammar3Parser parser(&tokens);
+            Grammar4Parser parser(&tokens);
             tree::ParseTree *tree = parser.prog();
             //cout << tree->toStringTree() << endl;
             Visitor visitor;
-            // cout << "2" << endl;
-            Function *result = (Function *)visitor.visit(tree);
-            //cout << "3" << endl;
+            cout << "2" << endl;
+            Prog* result = (Prog *)visitor.visit(tree);
+            cout << "3" << endl;
             //int resultat = (int)visitor.visit(tree);
-            //cout << "Résultat " << result->toString() << endl;
-            CFG* mainContext = new CFG(result);
-	    mainContext->ast->build_IR(mainContext);
-	    mainContext->gen_asm(asmFile);
+            cout << "Résultat " << result->toString() << endl;
+            result->build_ASM(asmFile);
             cout << "build success ASM generated" << endl;
-            
       }
 
       else
