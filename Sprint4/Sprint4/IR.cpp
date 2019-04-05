@@ -112,6 +112,7 @@ void CFG::gen_asm(ostream& o){
             cbb->gen_asm(o);
       }
       gen_asm_epilogue(o);
+      o << endl;
 }
 
 string CFG::IR_reg_to_asm(string reg){
@@ -120,8 +121,6 @@ string CFG::IR_reg_to_asm(string reg){
 }
 
 void CFG::gen_asm_prologue(ostream& o){
-      /*o << ".text" << endl;
-      o << ".global main" << endl;*/
       o << this->ast->name << ":" << endl;
       o << "pushq %rbp" << endl;
       o << "movq    %rsp, %rbp" << endl;

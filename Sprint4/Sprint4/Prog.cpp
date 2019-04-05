@@ -2,6 +2,7 @@
 
 void Prog::build_ASM(ostream &o)
 {
+      o << ".global main" << endl;
       for (map<string, Function *>::iterator it = functions->begin(); it != functions->end(); ++it)
       {
             cout << "1" << endl;
