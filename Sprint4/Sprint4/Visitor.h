@@ -9,16 +9,22 @@
 #include "Function.h"
 #include "Prog.h"
 #include "Type.h"
-#include "SymbAtt.h"
+#include "SymbolTable.h"
 
 using namespace std;
 class Visitor : public Grammar4BaseVisitor
 {
     public:
+      SymbolTable *symbolTable;
+
       // -------------------- It represents the program => It's the first visitor
       virtual antlrcpp::Any visitProg(Grammar4Parser::ProgContext *ctx) override
       {
             //cout << "2.1" << endl;
+
+            //Creating the symbolTable
+            this->symbolTable = new SymbolTable();
+
             Function *f;
 
             // -------------------- Functions
@@ -50,6 +56,12 @@ class Visitor : public Grammar4BaseVisitor
             // -------------------- Name = "main"
             string name = "main";
 
+            if (!symbolTable->addFunction(name, rtype))
+            {
+                  cerr << "Function " << name << " has already been defined" << endl;
+                  exit(1);
+            }
+
             // -------------------- Params => No params
             vector<ExpressionVar *> *params = new vector<ExpressionVar *>(0);
 
@@ -80,6 +92,13 @@ class Visitor : public Grammar4BaseVisitor
 
             // -------------------- Statement Return => it exisits
             StatementReturn *rstat = (StatementReturn *)visit(ctx->rstat());
+            if (rstat->value->type != rtype)
+            {
+                  cerr << "Return type of " << name << " function does not match with return statement" << endl;
+                  exit(1);
+            }
+
+            symbolTable->functionEnd();
 
             return (Function *)new Function(rtype, name, params, declList, statList, rstat);
       }
@@ -95,12 +114,19 @@ class Visitor : public Grammar4BaseVisitor
             // -------------------- Name
             string name = ctx->ID()->getText().c_str();
 
+            if (!symbolTable->addFunction(name, rtype))
+            {
+                  cerr << "Function " << name << " has already been defined" << endl;
+                  exit(1);
+            }
+
             // -------------------- Params
             vector<ExpressionVar *> *paramsList = new vector<ExpressionVar *>(0);
             if (ctx->dparams())
             {
                   paramsList = visit(ctx->dparams());
             }
+
             //cout << "2.1.2" << endl;
 
             // -------------------- Declarations
@@ -114,7 +140,6 @@ class Visitor : public Grammar4BaseVisitor
                         declList->push_back(decl);
                   }
             }
-
             //cout << "2.1.3" << endl;
 
             /// -------------------- Statements
@@ -133,11 +158,18 @@ class Visitor : public Grammar4BaseVisitor
             if (ctx->rstat())
             {
                   rstat = (StatementReturn *)visit(ctx->rstat());
+                  if (rstat->value->type != rtype)
+                  {
+                        cerr << "Return type of " << name << " function does not match with return statement" << endl;
+                        exit(1);
+                  }
             }
 
             //cout << "2.1.5" << endl;
 
             Function *function = new Function(rtype, name, paramsList, declList, statList, rstat);
+
+            symbolTable->functionEnd();
 
             return (Function *)function;
       }
@@ -147,11 +179,18 @@ class Visitor : public Grammar4BaseVisitor
       {
             //TODO: Modify to get the type of the function with symbolTable
 
-            // -------------------- Type of the called function
-            Type type = INT;
-
             // -------------------- Name  of the called function
             string name = ctx->ID()->getText().c_str();
+
+            // -------------------- Type of the called function
+            Symbol *functionSymbol = symbolTable->getSymbol(name);
+            if (!functionSymbol)
+            {
+                  cerr << "Function " << name << " does not exists" << endl;
+                  exit(1);
+            }
+
+            Type type = functionSymbol->type;
 
             // -------------------- Params values sent to the called function
             vector<Expression *> *params = new vector<Expression *>(0);
@@ -202,6 +241,12 @@ class Visitor : public Grammar4BaseVisitor
             // -------------------- Name
             string name = ctx->ID()->getText().c_str();
 
+            if (!symbolTable->addVar(name, type))
+            {
+                  cerr << "Variable " << name << " has already been declared" << endl;
+                  exit(1);
+            }
+
             return (ExpressionVar *)new ExpressionVar(type, name);
       }
 
@@ -243,6 +288,11 @@ class Visitor : public Grammar4BaseVisitor
             for (Declaration *d : *decls)
             {
                   d->left->type = type;
+                  if (!symbolTable->addVar(d->left->name, d->left->type))
+                  {
+                        cerr << "Variable " << d->left->name << " has already been declared" << endl;
+                        exit(1);
+                  }
             }
             //cout << "2.2.1.4" << endl;
 
@@ -316,7 +366,14 @@ class Visitor : public Grammar4BaseVisitor
       virtual antlrcpp::Any visitAsgn(Grammar4Parser::AsgnContext *ctx) override
       {
             // -------------------- The existing variable
-            ExpressionVar *left = new ExpressionVar(ctx->ID()->getText().c_str());
+            string name = ctx->ID()->getText().c_str();
+            Symbol *var = symbolTable->getSymbol(name);
+            if (!var)
+            {
+                  cerr << "Variable " << name << " does not exists" << endl;
+                  exit(1);
+            }
+            ExpressionVar *left = new ExpressionVar(name);
 
             // -------------------- The value
             Expression *right = (Expression *)visit(ctx->expr());
@@ -402,7 +459,17 @@ class Visitor : public Grammar4BaseVisitor
       // -------------------- Var value (Expression too)
       virtual antlrcpp::Any visitVar(Grammar4Parser::VarContext *ctx) override
       {
-            return (Expression *)new ExpressionVar(ctx->ID()->getText().c_str());
+            string name = ctx->ID()->getText().c_str();
+            //cout << "2.1.4.1" << endl;
+            Symbol *var = symbolTable->getSymbol(name);
+            //cout << "2.1.4.2" << endl;
+            if (var == nullptr)
+            {
+                  cerr << "Variable " << name << " does not exists" << endl;
+                  exit(1);
+            }
+            //cout << "2.1.4.3" << endl;
+            return (Expression *)new ExpressionVar(name);
       }
 
       virtual antlrcpp::Any visitRtypeTYPE(Grammar4Parser::RtypeTYPEContext *ctx) override
