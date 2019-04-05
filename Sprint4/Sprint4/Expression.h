@@ -13,7 +13,7 @@ class Expression
 {
     public:
       Type type;
-      Expression();
+      Expression() {}
       Expression(Type type) : type(type) {}
       virtual string toString()
       {
@@ -75,7 +75,12 @@ class ExpressionCall : public Expression
       vector<Expression*> *func_params;
       virtual string toString()
       {
-            return "ExpressionCall = { calledFuncName : " + calledFuncName + "}\n";
+            string result  = "ExpressionCall = { calledFuncName : " + calledFuncName + ", \n params : ";
+            for (vector<Expression *>::iterator it = func_params->begin(); it != func_params->end(); ++it)
+            {
+                  result += ((Expression *)*it)->toString() + "\n";
+            }
+            return result;
       }
       string build_IR(CFG *);
 };

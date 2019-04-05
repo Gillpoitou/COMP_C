@@ -8,11 +8,27 @@ class BasicBlock;
 class Statement
 {
     public:
-      Statement(ExpressionVar *left, Expression *right) : left(left), right(right) {}
-      string build_IR(CFG*);
+      virtual string build_IR(CFG *);
+      virtual string toString();
+};
+
+class StatementAssignement : public Statement
+{
+    public:
+      StatementAssignement(ExpressionVar *left, Expression *right) : left(left), right(right) {}
       ExpressionVar *left;
       Expression *right;
-      string toString();
+      virtual string build_IR(CFG *);
+      virtual string toString();
+};
+
+class StatementFunction : public Statement
+{
+    public:
+      StatementFunction(ExpressionCall *functionCalled) : functionCalled(functionCalled) {}
+      ExpressionCall *functionCalled;
+      virtual string build_IR(CFG *);
+      virtual string toString();
 };
 
 class StatementReturn
@@ -20,6 +36,6 @@ class StatementReturn
     public:
       StatementReturn(Expression *expr) : value(expr) {}
       string toString();
-      string build_IR(CFG*);
+      string build_IR(CFG *);
       Expression *value;
 };

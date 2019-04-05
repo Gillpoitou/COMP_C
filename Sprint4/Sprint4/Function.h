@@ -12,10 +12,16 @@ using namespace std;
 class Function
 {
     public:
-      Function(Type rtype, string name, vector<ExpressionVar*> *params, vector<Declaration *> *declarations, vector<Statement *> *stats, StatementReturn *rstat) : rtype(rtype), name(name), params(params), declarations(declarations), statements(stats), rstat(rstat) {}
+      Function(Type rtype, string name, vector<ExpressionVar *> *params, vector<Declaration *> *declarations, vector<Statement *> *stats, StatementReturn *rstat) : rtype(rtype), name(name), params(params), declarations(declarations), statements(stats), rstat(rstat) {}
       string toString()
       {
             string result = "Function = { \n";
+            // result += "type : " + rtype + ", \n";
+            result += "name : " + name + ", \n";
+            // for (vector<ExpressionVar *>::iterator it = params->begin(); it != params->end(); ++it)
+            // {
+            //       result += ((ExpressionVar *)*it)->toString() + "\n";
+            // }
             for (vector<Declaration *>::iterator it = declarations->begin(); it != declarations->end(); ++it)
             {
                   result += ((Declaration *)*it)->toString() + "\n";
@@ -24,14 +30,18 @@ class Function
             {
                   result += ((Statement *)*it2)->toString() + "\n";
             }
-
-            return result += "rstat : " + rstat->toString() + "}\n";
+            if (rstat)
+            {
+                  return result += "rstat : " + rstat->toString() + "}\n";
+            } else {
+                  return result += "}\n";
+            }
       }
 
-      void build_IR(CFG*);
-      Type rtype;  
+      void build_IR(CFG *);
+      Type rtype;
       string name;
-      vector<ExpressionVar*> *params;
+      vector<ExpressionVar *> *params;
       vector<Declaration *> *declarations;
       vector<Statement *> *statements;
       StatementReturn *rstat;

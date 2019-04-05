@@ -4,7 +4,8 @@
 typedef enum
 {
       INT,
-      VOID
+      VOID,
+      UNDEFINED
 } Type;
 
 // class Type

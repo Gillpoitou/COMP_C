@@ -1,14 +1,18 @@
+#pragma once
+
 #include <string>
+#include "Type.h"
+
 using namespace std;
 
 
 class SymbAtt
 {
     public:
-        SymbAtt(string aName, string aType, string aRType) : name(aName) { }
+        SymbAtt(string name, Type type, Type rtype) : name(name), type(type), rtype(rtype) { }
 
         string name;
-        string type;        //probably need to use the object Type
-        string rtype;
+        Type type;
+        Type rtype;
 
-}
+};
