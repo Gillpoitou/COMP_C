@@ -121,9 +121,17 @@ string CFG::IR_reg_to_asm(string reg){
 }
 
 void CFG::gen_asm_prologue(ostream& o){
+      int size = 0;
+      for (const auto& symbol_pair : SymbolIndex) {
+          size += 4;
+      }
+
+      size += 16 - (size % 16); // align to 16 bytes.
+
       o << this->ast->name << ":" << endl;
       o << "pushq %rbp" << endl;
       o << "movq    %rsp, %rbp" << endl;
+      o << "subq $" << size+8 << ", %rsp" << endl;
       for(int i = 0 ; i < this->ast->params->size() ; i++){
 
             string name = ast->params->at(i)->name;
@@ -132,7 +140,7 @@ void CFG::gen_asm_prologue(ostream& o){
 }
 
 void CFG::gen_asm_epilogue(ostream& o){
-      o << "popq    %rbp" << endl;
+      o << "leave" << endl;
       o << "ret" << endl;
 }
 
