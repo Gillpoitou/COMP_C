@@ -1,0 +1,7 @@
+int main(){
+
+      int abc = 1;
+      int ghi = 2;
+      int def = 3+3+3+3+3;
+      return def;
+}

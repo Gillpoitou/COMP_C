@@ -1,5 +1,7 @@
 #include "Expression.h"
 #include <string>
+#include <iostream>
+#include <map>
 
 using namespace std;
 
@@ -16,6 +18,9 @@ class Declaration
                         return "Declaration = { left : " + left->toString() + " , right : null } \n";
                   }
             }
+
+            void buildASM(ostream &o, map<string,int>* symbolTable, int* lastOffset);
+
 
             ExpressionVar * left;
             Expression * right;

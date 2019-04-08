@@ -1,5 +1,7 @@
 #include <string>
 #include <sstream>
+#include <iostream>
+#include <map>
 using namespace std;
 
 class Expression
@@ -21,6 +23,7 @@ class ExpressionConst : public Expression
             ss << value;
             return "ExpressionConst = { value : " + ss.str() + " } \n";
       }
+
       int value;
 };
 

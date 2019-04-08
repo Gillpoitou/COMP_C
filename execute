@@ -2,4 +2,8 @@
 
 dossier="Sprint$1"
 
+echo "$(gcc $dossier/prog.s -o $dossier/exe)"
+
 $dossier/exe
+
+echo $?
