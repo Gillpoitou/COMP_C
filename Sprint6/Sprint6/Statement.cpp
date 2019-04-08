@@ -76,10 +76,6 @@ string StatementFunction::build_IR(CFG *ir_cfg)
       return var;
 }
 
-string StatementIfElse::build_IR(CFG* ir_cfg){
-      return "";
-}
-
 string StatementReturn::build_IR(CFG *ir_cfg)
 {
       string var_name_ret = value->build_IR(ir_cfg);
@@ -91,29 +87,31 @@ string StatementReturn::build_IR(CFG *ir_cfg)
 
 string StatementIfElse::build_IR(CFG *ir_cfg){
 
-      if(condition != nullptr)
-      condition->build_IR(ir_cfg);
+      if(condition != nullptr){
+      		condition->build_IR(ir_cfg);
+	  }
 
-      BasicBlock* thenBB = new BasicBlock(ir_cfg, ir_cfg->new_BB_name());
+	  BasicBlock* afterIfBB = new BasicBlock(ir_cfg, ir_cfg->new_BB_name());
+      ir_cfg->add_bb(afterIfBB);
+	  afterIfBB->exit_true =  ir_cfg->current_bb->exit_true;
+      afterIfBB->exit_false =  ir_cfg->current_bb->exit_false;
+
+	  BasicBlock* thenBB = new BasicBlock(ir_cfg, ir_cfg->new_BB_name());
       ir_cfg->add_bb(thenBB);
+      thenBB->exit_true = afterIfBB;
+      thenBB->exit_false = nullptr;
+
+	  ir_cfg->current_bb->exit_true = thenBB;
+	  ir_cfg->current_bb->exit_false = nullptr;
 
       BasicBlock* elseBB = nullptr;
       if(elserule != nullptr){
             elseBB = new BasicBlock(ir_cfg, ir_cfg->new_BB_name());
             ir_cfg->add_bb(elseBB);
+			elseBB->exit_true = afterIfBB;
+      		elseBB->exit_false = nullptr;
+			ir_cfg->current_bb->exit_false = elseBB;
       }
-
-      BasicBlock* afterIfBB = new BasicBlock(ir_cfg, ir_cfg->new_BB_name());
-      ir_cfg->add_bb(afterIfBB);
-      
-      afterIfBB->exit_true =  ir_cfg->current_bb->exit_true;
-      afterIfBB->exit_false =  ir_cfg->current_bb->exit_false;
-      ir_cfg->current_bb->exit_true = thenBB;
-      ir_cfg->current_bb->exit_false = elseBB;
-      elseBB->exit_true = afterIfBB;
-      thenBB->exit_true = afterIfBB;
-      elseBB->exit_true = nullptr;
-      thenBB->exit_true = nullptr;
 
       ir_cfg->current_bb = thenBB;
       block->build_IR(ir_cfg);

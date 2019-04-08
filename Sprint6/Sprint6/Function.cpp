@@ -28,6 +28,7 @@ void Function::build_IR(CFG *ir_cfg)
 
       for (Statement *statm : *statements)
       {
+			//cout << "2.5 bis" << endl;
             statm->build_IR(ir_cfg);
       }
       //cout << "2.6" << endl;

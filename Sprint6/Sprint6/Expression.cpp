@@ -84,19 +84,43 @@ string ExpressionCall::build_IR(CFG* ir_cfg){
 }
 
 string ExpressionCompEq::build_IR(CFG* ir_cfg){
-      return "";
+    string leftName = this->left->build_IR(ir_cfg);
+    string rightName = this->right->build_IR(ir_cfg);
+	vector<string> params;
+    params.push_back(leftName);
+    params.push_back(rightName);
+    ir_cfg->current_bb->add_IRInstr(IRInstr::Operation::cmp_eq, INT, params);
+    return "";
 }
 
 string ExpressionCompDif::build_IR(CFG* ir_cfg){
-      return "";
+    string leftName = this->left->build_IR(ir_cfg);
+    string rightName = this->right->build_IR(ir_cfg);
+	vector<string> params;
+    params.push_back(leftName);
+    params.push_back(rightName);
+    ir_cfg->current_bb->add_IRInstr(IRInstr::Operation::cmp_neq, INT, params);
+    return "";
 }
 
 string ExpressionCompSup::build_IR(CFG* ir_cfg){
-      return "";
+    string leftName = this->left->build_IR(ir_cfg);
+    string rightName = this->right->build_IR(ir_cfg);
+	vector<string> params;
+    params.push_back(leftName);
+    params.push_back(rightName);
+    ir_cfg->current_bb->add_IRInstr(IRInstr::Operation::cmp_lt, INT, params);
+    return "";
 }
 
 string ExpressionCompInf::build_IR(CFG* ir_cfg){
-      return "";
+    string leftName = this->left->build_IR(ir_cfg);
+    string rightName = this->right->build_IR(ir_cfg);
+	vector<string> params;
+    params.push_back(leftName);
+    params.push_back(rightName);
+    ir_cfg->current_bb->add_IRInstr(IRInstr::Operation::cmp_gt, INT, params);
+    return "";
 }
 
 string ExpressionLogAnd::build_IR(CFG* ir_cfg){
