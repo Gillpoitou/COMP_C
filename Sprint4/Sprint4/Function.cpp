@@ -2,7 +2,7 @@
 
 void Function::build_IR(CFG *ir_cfg)
 {
-      cout << this->toString() << endl;
+      //cout << this->toString() << endl;
 
       //cout << "2.1" << endl;
       BasicBlock *first_bb = new BasicBlock(ir_cfg, this->name);
