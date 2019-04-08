@@ -30,8 +30,9 @@ class IRInstr {
 		wmem,
 		call, 
 		cmp_eq,
+		cmp_neq,
 		cmp_lt,
-		cmp_le,
+		cmp_gt,
 		ret
 	} Operation;
 
@@ -75,6 +76,7 @@ class BasicBlock {
 	void add_IRInstr(IRInstr::Operation op, Type t, vector<string> params);
 
 	// No encapsulation whatsoever here. Feel free to do better.
+	bool generated = false;
 	BasicBlock* exit_true;  /**< pointer to the next basic block, true branch. If nullptr, return from procedure */ 
 	BasicBlock* exit_false; /**< pointer to the next basic block, false branch. If null_ptr, the basic block ends with an unconditional jump */
 	string label; /**< label of the BB, also will be the label in the generated code */
