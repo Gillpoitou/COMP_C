@@ -1,5 +1,5 @@
 #pragma once
-#include <string.h>
+#include <string>
 #include <map>
 #include <vector>
 #include <iostream>
@@ -10,6 +10,7 @@
 #include "Prog.h"
 #include "Type.h"
 #include "SymbolTable.h"
+#include "Block.h"
 
 using namespace std;
 class Visitor : public Grammar4BaseVisitor
@@ -206,6 +207,27 @@ class Visitor : public Grammar4BaseVisitor
             //check the function exists
       }
 
+      virtual antlrcpp::Any visitBlock(Grammar4Parser::BlockContext *ctx) override
+      {
+            // -------------------- Statements
+            Statement *stat;
+            vector<Statement *> *statList = new vector<Statement *>(0);
+            for (int i = 0; i < ctx->stat().size(); i++)
+            {
+                  stat = (Statement *)visit(ctx->stat(i));
+                  statList->push_back(stat);
+            }
+
+            // -------------------- Statement Return
+            StatementReturn *rstat = nullptr;
+            if (ctx->rstat())
+            {
+                  rstat = (StatementReturn *)visit(ctx->rstat());
+            }
+
+            return (Block *)new Block(statList, rstat);
+      }
+
       // -------------------- Params in case of function definition
       virtual antlrcpp::Any visitDparams(Grammar4Parser::DparamsContext *ctx) override
       {
@@ -395,6 +417,38 @@ class Visitor : public Grammar4BaseVisitor
             return (Statement *)statement;
       }
 
+      virtual antlrcpp::Any visitStatifelse(Grammar4Parser::StatifelseContext *ctx) override
+      {
+            Statement * statement = (StatementIfElse *) visit(ctx->ifelse());
+            return (Statement *) statement;
+      }
+
+      virtual antlrcpp::Any visitIfelse(Grammar4Parser::IfelseContext *ctx) override
+      {
+            Expression * cond = (Expression *) visit(ctx->expr());
+
+            Block * block = (Block *) visit(ctx->block());
+
+            StatementIfElse * elserule = nullptr;
+
+            if(ctx->elserule()){
+                  elserule = (StatementIfElse *) visit(ctx->elserule());
+            }
+            return (StatementIfElse *) new StatementIfElse(cond, block, elserule);
+      }
+
+      virtual antlrcpp::Any visitElseonly(Grammar4Parser::ElseonlyContext *ctx) override
+      {
+            Block * block = (Block *) visit(ctx->block());
+
+            return (StatementIfElse *) new StatementIfElse(block);
+      }
+
+      virtual antlrcpp::Any visitElseif(Grammar4Parser::ElseifContext *ctx) override
+      {
+            return (StatementIfElse *) visit(ctx->ifelse());
+      }
+
       // -------------------- Expression Par
       virtual antlrcpp::Any visitPar(Grammar4Parser::ParContext *ctx) override
       {
@@ -456,6 +510,20 @@ class Visitor : public Grammar4BaseVisitor
             return (Expression *)expr;
       }
 
+      virtual antlrcpp::Any visitUnopexpr(Grammar4Parser::UnopexprContext *ctx) override
+      {
+            Expression *value = (Expression *)visit(ctx->expr());
+
+            if (ctx->UNOP()->getText().compare("!") == 0)
+            {
+                  return (Expression *)new ExpressionUnaryNo(INT, value);
+            }
+            else
+            {
+                  return (Expression *)new ExpressionUnaryMinus(INT, value);
+            }
+      }
+
       // -------------------- Var value (Expression too)
       virtual antlrcpp::Any visitVar(Grammar4Parser::VarContext *ctx) override
       {
@@ -470,6 +538,54 @@ class Visitor : public Grammar4BaseVisitor
             }
             //cout << "2.1.4.3" << endl;
             return (Expression *)new ExpressionVar(name);
+      }
+
+      virtual antlrcpp::Any visitCompexpr(Grammar4Parser::CompexprContext *ctx) override
+      {
+            // -------------------- Left operand
+            Expression *left = (Expression *)visit(ctx->expr(0));
+
+            // -------------------- Right operand
+            Expression *right = (Expression *)visit(ctx->expr(1));
+
+            if (ctx->COMPOP()->getText().compare("==") == 0)
+            {
+                  return (Expression *)new ExpressionCompEq(INT, left, right);
+            }
+            else if (ctx->COMPOP()->getText().compare("!=") == 0)
+            {
+                  return (Expression *)new ExpressionCompDif(INT, left, right);
+            }
+            else if (ctx->COMPOP()->getText().compare("<") == 0)
+            {
+                  return (Expression *)new ExpressionCompInf(INT, left, right);
+            }
+            else
+            {
+                  return (Expression *)new ExpressionCompSup(INT, left, right);
+            }
+      }
+
+      virtual antlrcpp::Any visitLogexpr(Grammar4Parser::LogexprContext *ctx) override
+      {
+            // -------------------- Left operand
+            Expression *left = (Expression *)visit(ctx->expr(0));
+
+            // -------------------- Right operand
+            Expression *right = (Expression *)visit(ctx->expr(1));
+
+            if (ctx->LOGOP()->getText().compare("&&") == 0)
+            {
+                  return (Expression *)new ExpressionLogAnd(INT, left, right);
+            }
+            else if (ctx->LOGOP()->getText().compare("||") == 0)
+            {
+                  return (Expression *)new ExpressionLogOr(INT, left, right);
+            }
+            else
+            {
+                  return (Expression *)new ExpressionLogXor(INT, left, right);
+            }
       }
 
       virtual antlrcpp::Any visitRtypeTYPE(Grammar4Parser::RtypeTYPEContext *ctx) override
@@ -487,21 +603,3 @@ class Visitor : public Grammar4BaseVisitor
             return (Type)INT;
       }
 };
-
-/*
-
-      TODO:
-
-      Une pile de table de symbole => chaque étage est une table correspondant à un contexte (une fonction dans notre cas)
-      Lorsqu'on rentre dans la définition d'une fonction => on empile un table de symboles. Quand la définition est terminée, on dépile
-
-      Pour chaque 
-            Déclaration de variable
-            => Vérifier que ça n'existe pas déjà dans la table des symboles du contexte
-
-            Utilisation de variable
-            Initialisation de variable
-            Appel de fonction
-            => Vérifier qu'elle existe dans la table des symboles
-            
-*/

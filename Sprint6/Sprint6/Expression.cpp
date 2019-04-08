@@ -14,6 +14,14 @@ string ExpressionConst::build_IR(CFG* ir_cfg){
     return var;
 }
 
+string ExpressionUnaryMinus::build_IR(CFG* ir_cfg){
+      return "";
+}
+
+string ExpressionUnaryNo::build_IR(CFG* ir_cfg){
+      return "";
+}
+
 string ExpressionMinus::build_IR(CFG* ir_cfg){
     string leftName = this->left->build_IR(ir_cfg);
     string rightName = this->right->build_IR(ir_cfg);
@@ -73,4 +81,32 @@ string ExpressionCall::build_IR(CFG* ir_cfg){
     }
     ir_cfg->current_bb->add_IRInstr(IRInstr::Operation::call, INT, params);
     return var;
+}
+
+string ExpressionCompEq::build_IR(CFG* ir_cfg){
+      return "";
+}
+
+string ExpressionCompDif::build_IR(CFG* ir_cfg){
+      return "";
+}
+
+string ExpressionCompSup::build_IR(CFG* ir_cfg){
+      return "";
+}
+
+string ExpressionCompInf::build_IR(CFG* ir_cfg){
+      return "";
+}
+
+string ExpressionLogAnd::build_IR(CFG* ir_cfg){
+      return "";
+}
+
+string ExpressionLogOr::build_IR(CFG* ir_cfg){
+      return "";
+}
+
+string ExpressionLogXor::build_IR(CFG* ir_cfg){
+      return "";
 }

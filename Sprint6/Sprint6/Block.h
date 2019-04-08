@@ -2,15 +2,18 @@
 
 #include <vector>
 #include "Declaration.h"
+#include "string"
 #include "Statement.h"
+
+using namespace std;
 
 class Block
 {
     public:
-      Bloc(vector<Statement *> *statements, StatementReturn *rstat) : statements(statements), rstat(rstat) {}
+      Block(vector<Statement *> *statements, StatementReturn *rstat) : statements(statements), rstat(rstat) {}
       string toString()
       {
-            string result = "Bloc = { \n";
+            string result = "Block = { \n";
             for (vector<Statement *>::iterator it2 = statements->begin(); it2 != statements->end(); ++it2)
             {
                   result += ((Statement *)*it2)->toString() + "\n";

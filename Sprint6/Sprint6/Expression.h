@@ -154,6 +154,7 @@ class ExpressionMult : public ExpressionBinary
 
 class ExpressionCompEq : public ExpressionBinary
 {
+    public:
       ExpressionCompEq(Type type, Expression *left, Expression *right) : ExpressionBinary(type, left, right) {}
       virtual string toString()
       {
@@ -164,6 +165,7 @@ class ExpressionCompEq : public ExpressionBinary
 
 class ExpressionCompDif : public ExpressionBinary
 {
+    public:
       ExpressionCompDif(Type type, Expression *left, Expression *right) : ExpressionBinary(type, left, right) {}
       virtual string toString()
       {
@@ -174,6 +176,7 @@ class ExpressionCompDif : public ExpressionBinary
 
 class ExpressionCompSup : public ExpressionBinary
 {
+    public:
       ExpressionCompSup(Type type, Expression *left, Expression *right) : ExpressionBinary(type, left, right) {}
       virtual string toString()
       {
@@ -184,6 +187,7 @@ class ExpressionCompSup : public ExpressionBinary
 
 class ExpressionCompInf : public ExpressionBinary
 {
+    public:
       ExpressionCompInf(Type type, Expression *left, Expression *right) : ExpressionBinary(type, left, right) {}
       virtual string toString()
       {
@@ -194,6 +198,7 @@ class ExpressionCompInf : public ExpressionBinary
 
 class ExpressionLogAnd : public ExpressionBinary
 {
+    public:
       ExpressionLogAnd(Type type, Expression *left, Expression *right) : ExpressionBinary(type, left, right) {}
       virtual string toString()
       {
@@ -204,6 +209,7 @@ class ExpressionLogAnd : public ExpressionBinary
 
 class ExpressionLogOr : public ExpressionBinary
 {
+    public:
       ExpressionLogOr(Type type, Expression *left, Expression *right) : ExpressionBinary(type, left, right) {}
       virtual string toString()
       {
@@ -214,6 +220,7 @@ class ExpressionLogOr : public ExpressionBinary
 
 class ExpressionLogXor : public ExpressionBinary
 {
+    public:
       ExpressionLogXor(Type type, Expression *left, Expression *right) : ExpressionBinary(type, left, right) {}
       virtual string toString()
       {
