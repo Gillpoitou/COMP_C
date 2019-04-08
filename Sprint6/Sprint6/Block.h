@@ -7,7 +7,7 @@
 class Block
 {
     public:
-      Bloc(vector<Statement *> *statements, StatementReturn *rstat) : statements(statements), rstat(rstat) {}
+      Block(vector<Statement *> *statements, StatementReturn *rstat) : statements(statements), rstat(rstat) {}
       string toString()
       {
             string result = "Bloc = { \n";

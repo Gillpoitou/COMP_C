@@ -62,3 +62,39 @@ string StatementReturn::build_IR(CFG *ir_cfg)
       ir_cfg->current_bb->add_IRInstr(IRInstr::Operation::ret, INT, params);
       return "";
 }
+
+string StatementIfElse::build_IR(CFG *ir_cfg){
+
+      if(condition != nullptr)
+      condition->build_IR(ir_cfg);
+
+      BasicBlock* thenBB = new BasicBlock(ir_cfg, ir_cfg->new_BB_name());
+      ir_cfg->add_bb(thenBB);
+
+      BasicBlock* elseBB = nullptr;
+      if(elserule != nullptr){
+            elseBB = new BasicBlock(ir_cfg, ir_cfg->new_BB_name());
+            ir_cfg->add_bb(elseBB);
+      }
+
+      BasicBlock* afterIfBB = new BasicBlock(ir_cfg, ir_cfg->new_BB_name());
+      ir_cfg->add_bb(afterIfBB);
+      
+      afterIfBB->exit_true =  ir_cfg->current_bb->exit_true;
+      afterIfBB->exit_false =  ir_cfg->current_bb->exit_false;
+      ir_cfg->current_bb->exit_true = thenBB;
+      ir_cfg->current_bb->exit_false = elseBB;
+      elseBB->exit_true = afterIfBB;
+      thenBB->exit_true = afterIfBB;
+      elseBB->exit_true = nullptr;
+      thenBB->exit_true = nullptr;
+
+      ir_cfg->current_bb = thenBB;
+      block->build_IR(ir_cfg);
+
+      if(elseBB != nullptr) {
+            ir_cfg->current_bb = elseBB;
+            elserule->build_IR(ir_cfg);
+      }
+      ir_cfg->current_bb = afterIfBB;
+}

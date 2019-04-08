@@ -74,3 +74,7 @@ string ExpressionCall::build_IR(CFG* ir_cfg){
     ir_cfg->current_bb->add_IRInstr(IRInstr::Operation::call, INT, params);
     return var;
 }
+
+string ExpressionCompEq::build_IR(CFG* ir_cfg){
+    
+}
