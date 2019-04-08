@@ -20,20 +20,20 @@ void Function::build_IR(CFG *ir_cfg)
 
       //cout << "2.4" << endl;
 
-      // for (Declaration *decl : *declarations)
-      // {
-      //       decl->build_IR(ir_cfg);
-      // }
-      // //cout << "2.5" << endl;
+      for (Declaration *decl : *declarations)
+      {
+            decl->build_IR(ir_cfg);
+      }
+      //cout << "2.5" << endl;
 
-      // for (Statement *statm : *statements)
-      // {
-      //       statm->build_IR(ir_cfg);
-      // }
-      // //cout << "2.6" << endl;
+      for (Statement *statm : *statements)
+      {
+            statm->build_IR(ir_cfg);
+      }
+      //cout << "2.6" << endl;
 
-      // if (rstat)
-      // {
-      //       rstat->build_IR(ir_cfg);
-      // }
+      if (rstat)
+      {
+            rstat->build_IR(ir_cfg);
+      }
 }

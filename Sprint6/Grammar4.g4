@@ -4,14 +4,14 @@ grammar Grammar4;
 prog: funcdef* main;
 
 // ------------- functions
-main: 'int' 'main' '(' ')' bloc;
-
-funcdef: rtype ID '(' dparams? ')' bloc;
+main: 'int' 'main' '(' ')' '{' declaration* stat* rstat'}'
+    ;
+funcdef: rtype ID '(' dparams? ')' '{' declaration* stat* rstat?'}';
 
 fncall: ID '(' cparams? ')';
 
-// ------------- bloc
-bloc: '{' declaration* stat* rstat? '}';
+// ------------- block
+block:  '{' stat* rstat? '}';
 
 // ------------- functions params
 dparams: dparam ',' dparams
@@ -40,9 +40,9 @@ stat: ID '=' expr ';'   # asgn
     ;
 
 // ------------- If else
-ifelse : 'if' '(' expr ')' bloc elserule? ;
+ifelse : 'if' '(' expr ')' block elserule? ;
 
-elserule : 'else' bloc # elseonly
+elserule : 'else' block # elseonly
       | 'else' ifelse # elseif ;
 
 // ------------- expressions
