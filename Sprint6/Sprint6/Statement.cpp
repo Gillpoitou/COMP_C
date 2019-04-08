@@ -1,5 +1,6 @@
 #include "Statement.h"
 #include "Expression.h"
+#include "Block.h"
 #include "IR.h"
 
 string Statement::toString()
@@ -14,6 +15,27 @@ string StatementAssignement::toString()
 string StatementFunction::toString()
 {
       return "StatementFunction = { function : " + functionCalled->toString() + "\n";
+}
+
+string StatementIfElse::toString()
+{
+
+      string result = "StatementIfElse = { ";
+
+      
+      if(condition != nullptr){
+            result += "cond : " + condition->toString() + ", \n";
+      }
+      
+      result += "block : " + block->toString() + ", \n";
+
+      if(elserule != nullptr){
+            result += "elserule : " + elserule->toString() + ", \n";
+      }
+
+      result += "} \n";
+
+      return result;
 }
 
 string StatementReturn::toString()
@@ -52,6 +74,10 @@ string StatementFunction::build_IR(CFG *ir_cfg)
       }
       ir_cfg->current_bb->add_IRInstr(IRInstr::Operation::call, INT, params);
       return var;
+}
+
+string StatementIfElse::build_IR(CFG* ir_cfg){
+      return "";
 }
 
 string StatementReturn::build_IR(CFG *ir_cfg)

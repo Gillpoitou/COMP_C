@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Expression.h"
 #include <string>
 

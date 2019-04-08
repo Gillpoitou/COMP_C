@@ -36,7 +36,7 @@ variable: ID # decl
 rstat: 'return' expr ';';
 stat: ID '=' expr ';'   # asgn
     | fncall ';'        # callnr
-    | ifelse ';' # statifelse
+    | ifelse # statifelse
     ;
 
 // ------------- If else
@@ -52,8 +52,8 @@ expr: expr MULT expr # mult
     | ID            # var
     | '(' expr ')'  # par
     | fncall        # callr
-    | expr compop expr # compexpr
-    | expr logop expr # logexpr
+    | expr COMPOP expr # compexpr
+    | expr LOGOP expr # logexpr
     | UNOP expr # unopexpr
     ;
 
@@ -65,16 +65,16 @@ type: 'int' # typeINT
     ;
 
 // ------------- Comp operators
-compop: '==' # eqcomp
-      | '!=' # difcomp
-      | '<' # infcomp
-      | '>' # supcomp
+COMPOP: '==' 
+      | '!=' 
+      | '<' 
+      | '>' 
       ;
 
 // ------------- Logic operators
-logop: '&&' # and
-      | '||' # or
-      | '^' # xor
+LOGOP: '&&' 
+      | '||' 
+      | '^' 
       ;
 
 // ------------- terminals

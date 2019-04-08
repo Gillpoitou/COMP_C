@@ -58,7 +58,7 @@ void IRInstr::gen_asm(ostream &o){
             o << "cmpl -" << this->bb->cfg->get_var_index(params[1]) << "(%rbp), %eax" << endl;
             o << "je" << bb->exit_false->label << endl;
             break;
-      case cmp_neq:
+  case cmp_neq:
             o << "movl -" << this->bb->cfg->get_var_index(params[0]) << "(%rbp), %eax" << endl;
             o << "cmpl -" << this->bb->cfg->get_var_index(params[1]) << "(%rbp), %eax" << endl;
             o << "jne" << bb->exit_false->label << endl;

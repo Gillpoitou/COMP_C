@@ -1,9 +1,11 @@
+#pragma once
+
 #include "string"
 #include "Expression.h"
-#include "Block.h"
 using namespace std;
 
 class Expression;
+class Block;
 class BasicBlock;
 
 class Statement
@@ -35,6 +37,7 @@ class StatementFunction : public Statement
 class StatementIfElse : public Statement
 {
     public:
+      StatementIfElse(Block* block): condition(nullptr), block(block), elserule(nullptr) {}
       StatementIfElse(Expression * condition, Block* block, StatementIfElse * elserule) : condition(condition), block(block), elserule(elserule) {}
       Expression * condition;
       Block* block;
