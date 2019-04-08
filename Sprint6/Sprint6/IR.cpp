@@ -54,13 +54,24 @@ void IRInstr::gen_asm(ostream &o){
             o << "movl  %eax,-" << this->bb->cfg->get_var_index(params[1]) << "(%rbp)" << endl;
             break;
 	case cmp_eq:
-
+            o << "movl -" << this->bb->cfg->get_var_index(params[0]) << "(%rbp), %eax" << endl;
+            o << "cmpl -" << this->bb->cfg->get_var_index(params[1]) << "(%rbp), %eax" << endl;
+            o << "je" << bb->exit_false->label << endl;
+            break;
+  case cmp_neq:
+            o << "movl -" << this->bb->cfg->get_var_index(params[0]) << "(%rbp), %eax" << endl;
+            o << "cmpl -" << this->bb->cfg->get_var_index(params[1]) << "(%rbp), %eax" << endl;
+            o << "jne" << bb->exit_false->label << endl;
             break; 
 	case cmp_lt:
-
+            o << "movl -" << this->bb->cfg->get_var_index(params[0]) << "(%rbp), %eax" << endl;
+            o << "cmpl -" << this->bb->cfg->get_var_index(params[1]) << "(%rbp), %eax" << endl;
+            o << "jl" << bb->exit_false->label << endl;
             break;
-	case cmp_le:
-
+	case cmp_gt:
+            o << "movl -" << this->bb->cfg->get_var_index(params[0]) << "(%rbp), %eax" << endl;
+            o << "cmpl -" << this->bb->cfg->get_var_index(params[1]) << "(%rbp), %eax" << endl;
+            o << "jg" << bb->exit_false->label << endl;
             break;
 	case ret:
 	  o << "movl -" << this->bb->cfg->get_var_index(params[0]) << "(%rbp), %eax" << endl;
@@ -77,7 +88,7 @@ BasicBlock::BasicBlock(CFG* cfg, string entry_label){
 }
 
 void BasicBlock::gen_asm(ostream &o){
-      //o << "." << label << endl;
+      generated = true;
 
       for(IRInstr* i : instrs){
             i->gen_asm(o);
@@ -85,12 +96,18 @@ void BasicBlock::gen_asm(ostream &o){
       if(exit_true == nullptr){
             return;
       }
-      if(exit_false != nullptr){
-            o << "." << exit_false->label << endl;
-            exit_false->gen_asm(o);
+
+      o << "jmp   " << exit_true->label << endl;
+
+      if(!exit_true->generated){
+            o << "." << exit_true->label <<":" << endl;
+            exit_true->gen_asm(o);
       }
 
-      exit_true->gen_asm(o);
+      if(exit_false != nullptr && !exit_false->generated){
+            o << "." << exit_false->label <<":" << endl;
+            exit_false->gen_asm(o);
+      } 
 }
 
 void BasicBlock::add_IRInstr(IRInstr::Operation op, Type t, vector<string> params){
@@ -162,4 +179,8 @@ int CFG::get_var_index(string name){
 
 Type CFG::get_var_type(string name){
       return SymbolType.at(name);
+}
+
+string CFG::new_BB_name(){
+      return "L" + bbs.size();
 }
