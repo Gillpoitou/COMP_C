@@ -11,7 +11,7 @@ funcdef: rtype ID '(' dparams? ')' bloc;
 fncall: ID '(' cparams? ')';
 
 // ------------- bloc
-bloc: '{' declaration* stat* rstat '}';
+bloc: '{' declaration* stat* rstat? '}';
 
 // ------------- functions params
 dparams: dparam ',' dparams
@@ -52,8 +52,8 @@ expr: expr MULT expr # mult
     | ID            # var
     | '(' expr ')'  # par
     | fncall        # callr
-    | expr compop expr # comp
-    | expr logop expr # log
+    | expr compop expr # compexpr
+    | expr logop expr # logexpr
     | UNOP expr # unopexpr
     ;
 
