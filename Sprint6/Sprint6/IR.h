@@ -34,6 +34,7 @@ class IRInstr {
 		cmp_neq,
 		cmp_lt,
 		cmp_gt,
+		no,
 		ret
 	} Operation;
 
