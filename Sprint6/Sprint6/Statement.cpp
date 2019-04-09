@@ -27,7 +27,7 @@ string StatementIfElse::toString()
             result += "cond : " + condition->toString() + ", \n";
       }
       
-      result += "block : " + block->toString() + ", \n";
+      result += block->toString() + ", \n";
 
       if(elserule != nullptr){
             result += "elserule : " + elserule->toString() + ", \n";

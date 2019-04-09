@@ -33,6 +33,11 @@ void IRInstr::gen_asm(ostream &o){
       	    o << "subl -" << this->bb->cfg->get_var_index(params[2]) << "(%rbp), %eax" << endl;
 	    o << "movl %eax, -" << this->bb->cfg->get_var_index(params[0]) << "(%rbp)" << endl;
             break;
+      case neg:
+            o << "movl -" << this->bb->cfg->get_var_index(params[1]) << "(%rbp), %eax" << endl;
+            o << "negl %eax" << endl;
+            o << "movl %eax, -" << this->bb->cfg->get_var_index(params[0]) << "(%rbp)" << endl;
+            break;
 	case mul:
             o << "movl -" << this->bb->cfg->get_var_index(params[1]) << "(%rbp), %eax" << endl;
             o << "imull -" << this->bb->cfg->get_var_index(params[2]) << "(%rbp), %eax" << endl;
@@ -72,6 +77,10 @@ void IRInstr::gen_asm(ostream &o){
             o << "movl -" << this->bb->cfg->get_var_index(params[0]) << "(%rbp), %eax" << endl;
             o << "cmpl -" << this->bb->cfg->get_var_index(params[1]) << "(%rbp), %eax" << endl;
             o << "jg ." << bb->exit_false->label << endl;
+            break;
+      case no:
+            o << "cmpl $0, -" << this->bb->cfg->get_var_index(params[0]) << "(%rbp)" << endl;
+            o << "jne ." << bb->exit_false->label << endl;
             break;
 	case ret:
 	  o << "movl -" << this->bb->cfg->get_var_index(params[0]) << "(%rbp), %eax" << endl;

@@ -25,6 +25,7 @@ class IRInstr {
 		ldconst,
 		add,
 		sub,
+		neg,
 		mul,
 		rmem,
 		wmem,
@@ -33,6 +34,7 @@ class IRInstr {
 		cmp_neq,
 		cmp_lt,
 		cmp_gt,
+		no,
 		ret
 	} Operation;
 

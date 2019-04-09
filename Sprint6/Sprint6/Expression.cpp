@@ -15,11 +15,13 @@ string ExpressionConst::build_IR(CFG* ir_cfg){
 }
 
 string ExpressionUnaryMinus::build_IR(CFG* ir_cfg){
-      return "";
-}
-
-string ExpressionUnaryNo::build_IR(CFG* ir_cfg){
-      return "";
+    string valueName = this->value->build_IR(ir_cfg);
+    string var = ir_cfg->create_new_tempvar(INT);
+    vector<string>params;
+    params.push_back(var);
+    params.push_back(valueName);
+    ir_cfg->current_bb->add_IRInstr(IRInstr::Operation::neg, INT, params);
+    return var;
 }
 
 string ExpressionMinus::build_IR(CFG* ir_cfg){
@@ -120,6 +122,14 @@ string ExpressionCompInf::build_IR(CFG* ir_cfg){
     params.push_back(leftName);
     params.push_back(rightName);
     ir_cfg->current_bb->add_IRInstr(IRInstr::Operation::cmp_gt, INT, params);
+    return "";
+}
+
+string ExpressionUnaryNo::build_IR(CFG* ir_cfg){
+    string valueName = this->value->build_IR(ir_cfg);
+    vector<string>params;
+    params.push_back(valueName);
+    ir_cfg->current_bb->add_IRInstr(IRInstr::Operation::no, INT, params);
     return "";
 }
 
