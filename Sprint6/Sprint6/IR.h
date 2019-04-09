@@ -25,6 +25,7 @@ class IRInstr {
 		ldconst,
 		add,
 		sub,
+		neg,
 		mul,
 		rmem,
 		wmem,

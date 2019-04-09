@@ -19,7 +19,13 @@ string ExpressionUnaryMinus::build_IR(CFG* ir_cfg){
 }
 
 string ExpressionUnaryNo::build_IR(CFG* ir_cfg){
-      return "";
+    string valueName = this->value->build_IR(ir_cfg);
+    string var = ir_cfg->create_new_tempvar(INT);
+    vector<string>params;
+    params.push_back(var);
+    params.push_back(valueName);
+    ir_cfg->current_bb->add_IRInstr(IRInstr::Operation::neg, INT, params);
+    return var;
 }
 
 string ExpressionMinus::build_IR(CFG* ir_cfg){
