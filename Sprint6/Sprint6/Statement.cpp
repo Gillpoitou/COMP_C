@@ -87,9 +87,7 @@ string StatementReturn::build_IR(CFG *ir_cfg)
 
 string StatementIfElse::build_IR(CFG *ir_cfg){
 
-      if(condition != nullptr){
-      		condition->build_IR(ir_cfg);
-	  }
+
 
 	  BasicBlock* afterIfBB = new BasicBlock(ir_cfg, ir_cfg->new_BB_name());
       ir_cfg->add_bb(afterIfBB);
@@ -102,7 +100,7 @@ string StatementIfElse::build_IR(CFG *ir_cfg){
       thenBB->exit_false = nullptr;
 
 	  ir_cfg->current_bb->exit_true = thenBB;
-	  ir_cfg->current_bb->exit_false = nullptr;
+	  ir_cfg->current_bb->exit_false = afterIfBB;
 
       BasicBlock* elseBB = nullptr;
       if(elserule != nullptr){
@@ -112,7 +110,9 @@ string StatementIfElse::build_IR(CFG *ir_cfg){
       		elseBB->exit_false = nullptr;
 			ir_cfg->current_bb->exit_false = elseBB;
       }
-
+            if(condition != nullptr){
+      		condition->build_IR(ir_cfg);
+	  }
       ir_cfg->current_bb = thenBB;
       block->build_IR(ir_cfg);
 
@@ -121,4 +121,6 @@ string StatementIfElse::build_IR(CFG *ir_cfg){
             elserule->build_IR(ir_cfg);
       }
       ir_cfg->current_bb = afterIfBB;
+
+      return "";
 }

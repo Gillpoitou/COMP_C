@@ -11,4 +11,5 @@ string Block::build_IR(CFG* ir_cfg){
       {
             rstat->build_IR(ir_cfg);
       }
+      return "";
 }

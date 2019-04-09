@@ -1,15 +1,14 @@
 int main(){
       int x = 3;
       int y = 4;
-      int z;
+      int z = 7;
 
-      if(x > y){
+      if(x == y && x < y){
             z = x;
-      } else if (x < y){
-            z = y;
-      } else {
-            z = 0;
-      } 
-
+      }else if(z < x && z < y){
+            z =10;
+      }else{
+            z=9;
+      }
       return z;
 }
