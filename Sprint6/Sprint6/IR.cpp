@@ -56,12 +56,12 @@ void IRInstr::gen_asm(ostream &o){
 	case cmp_eq:
             o << "movl -" << this->bb->cfg->get_var_index(params[0]) << "(%rbp), %eax" << endl;
             o << "cmpl -" << this->bb->cfg->get_var_index(params[1]) << "(%rbp), %eax" << endl;
-            o << "je ." << bb->exit_false->label << endl;
+            o << "jne ." << bb->exit_false->label << endl;
             break;
   	case cmp_neq:
             o << "movl -" << this->bb->cfg->get_var_index(params[0]) << "(%rbp), %eax" << endl;
             o << "cmpl -" << this->bb->cfg->get_var_index(params[1]) << "(%rbp), %eax" << endl;
-            o << "jne ." << bb->exit_false->label << endl;
+            o << "je ." << bb->exit_false->label << endl;
             break; 
 	case cmp_lt:
             o << "movl -" << this->bb->cfg->get_var_index(params[0]) << "(%rbp), %eax" << endl;
@@ -94,6 +94,8 @@ void BasicBlock::gen_asm(ostream &o){
             i->gen_asm(o);
       }
       if(exit_true == nullptr){
+			this->cfg->gen_asm_epilogue(o);
+			o << endl;
             return;
       }
 
@@ -125,10 +127,7 @@ void CFG::add_bb(BasicBlock* bb){
 
 void CFG::gen_asm(ostream& o){
       gen_asm_prologue(o);
-      for(BasicBlock* cbb : bbs){
-            cbb->gen_asm(o);
-      }
-      gen_asm_epilogue(o);
+      bbs[0]->gen_asm(o);
       o << endl;
 }
 
