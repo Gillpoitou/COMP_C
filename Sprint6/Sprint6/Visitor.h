@@ -423,6 +423,21 @@ class Visitor : public Grammar4BaseVisitor
             return (Statement *) statement;
       }
 
+       virtual antlrcpp::Any visitStatwhile(Grammar4Parser::StatwhileContext *ctx) override
+      {
+            Statement * statement = (StatementWhile *) visit(ctx->whilerule());
+            return (Statement *) statement;
+      }
+
+      virtual antlrcpp::Any visitWhilerule(Grammar4Parser::WhileruleContext *ctx) override
+      {
+            Expression * cond = (Expression *) visit(ctx->expr());
+
+            Block * block = (Block *) visit(ctx->block());
+
+            return (StatementWhile *) new StatementWhile(cond, block);
+      }
+
       virtual antlrcpp::Any visitIfelse(Grammar4Parser::IfelseContext *ctx) override
       {
             Expression * cond = (Expression *) visit(ctx->expr());

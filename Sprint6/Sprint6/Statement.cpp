@@ -38,6 +38,28 @@ string StatementIfElse::toString()
       return result;
 }
 
+string StatementWhile::toString()
+{
+
+      string result = "StatementWhile = { ";
+
+      
+      if(condition != nullptr){
+            result += "cond : " + condition->toString() + ", \n";
+      }
+      
+      result += block->toString() + ", \n";
+
+      result += "} \n";
+
+      return result;
+}
+
+string StatementWhile::build_IR(CFG *ir_cfg)
+{
+      return "";
+}
+
 string StatementReturn::toString()
 {
       return "Return = { value : " + value->toString() + " }\n";
