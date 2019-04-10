@@ -55,11 +55,6 @@ string StatementWhile::toString()
       return result;
 }
 
-string StatementWhile::build_IR(CFG *ir_cfg)
-{
-      return "";
-}
-
 string StatementReturn::toString()
 {
       return "Return = { value : " + value->toString() + " }\n";
@@ -143,4 +138,18 @@ string StatementIfElse::build_IR(CFG *ir_cfg){
             elserule->build_IR(ir_cfg);
       }
       ir_cfg->current_bb = afterIfBB;
+}
+
+string StatementWhile::build_IR(CFG *ir_cfg)
+{
+      /*if(condition != nullptr){
+            condition->build_IR(ir_cfg);
+      }
+      BasicBlock* afterIfBB = new BasicBlock(ir_cfg, ir_cfg->new_BB_name());
+      ir_cfg->add_bb(afterIfBB);
+	  afterIfBB->exit_true =  ir_cfg->current_bb->exit_true;
+      afterIfBB->exit_false =  ir_cfg->current_bb->exit_false;*/
+      //FULL ZEUB KLODO
+
+      return "";
 }
