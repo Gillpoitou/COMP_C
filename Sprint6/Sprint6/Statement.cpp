@@ -2,6 +2,7 @@
 #include "Expression.h"
 #include "Block.h"
 #include "IR.h"
+#include <string.h>
 
 string Statement::toString()
 {
@@ -55,11 +56,6 @@ string StatementWhile::toString()
       return result;
 }
 
-string StatementWhile::build_IR(CFG *ir_cfg)
-{
-      return "";
-}
-
 string StatementReturn::toString()
 {
       return "Return = { value : " + value->toString() + " }\n";
@@ -104,14 +100,13 @@ string StatementReturn::build_IR(CFG *ir_cfg)
       vector<string> params;
       params.push_back(var_name_ret);
       ir_cfg->current_bb->add_IRInstr(IRInstr::Operation::ret, INT, params);
+      ir_cfg->current_bb->exit_true = nullptr;
       return "";
 }
 
 string StatementIfElse::build_IR(CFG *ir_cfg){
 
-      if(condition != nullptr){
-      		condition->build_IR(ir_cfg);
-	  }
+
 
 	  BasicBlock* afterIfBB = new BasicBlock(ir_cfg, ir_cfg->new_BB_name());
       ir_cfg->add_bb(afterIfBB);
@@ -124,7 +119,7 @@ string StatementIfElse::build_IR(CFG *ir_cfg){
       thenBB->exit_false = nullptr;
 
 	  ir_cfg->current_bb->exit_true = thenBB;
-	  ir_cfg->current_bb->exit_false = nullptr;
+	  ir_cfg->current_bb->exit_false = afterIfBB;
 
       BasicBlock* elseBB = nullptr;
       if(elserule != nullptr){
@@ -134,7 +129,9 @@ string StatementIfElse::build_IR(CFG *ir_cfg){
       		elseBB->exit_false = nullptr;
 			ir_cfg->current_bb->exit_false = elseBB;
       }
-
+            if(condition != nullptr){
+      		condition->build_IR(ir_cfg);
+	  }
       ir_cfg->current_bb = thenBB;
       block->build_IR(ir_cfg);
 
@@ -143,5 +140,27 @@ string StatementIfElse::build_IR(CFG *ir_cfg){
             elserule->build_IR(ir_cfg);
       }
       ir_cfg->current_bb = afterIfBB;
+
+      return "";
+}
+
+string StatementWhile::build_IR(CFG *ir_cfg)
+{
+      BasicBlock* afterWhileBB = new BasicBlock(ir_cfg,ir_cfg->new_BB_name());
+      ir_cfg->add_bb(afterWhileBB);
+      BasicBlock* conditionBB = new BasicBlock(ir_cfg,ir_cfg->new_BB_name());
+      ir_cfg->add_bb(conditionBB);
+      afterWhileBB->exit_false = ir_cfg->current_bb->exit_true;
+      ir_cfg->current_bb->exit_true = conditionBB;
+      ir_cfg->current_bb = conditionBB;
+      condition->build_IR(ir_cfg);
+      BasicBlock* loopBB = new BasicBlock(ir_cfg,ir_cfg->new_BB_name());
+      ir_cfg->add_bb(loopBB);
+      conditionBB->exit_true = loopBB;
+      conditionBB->exit_false = afterWhileBB;
+      loopBB->exit_true = conditionBB;
+      ir_cfg->current_bb = loopBB;
+      block->build_IR(ir_cfg);
+      ir_cfg->current_bb = afterWhileBB;
       return "";
 }
