@@ -4,7 +4,7 @@ int function(int a) {
    
 int main() {
    int a;
-   a = 1;
+   a = 2;
    a = function(a);
    return a;
 }

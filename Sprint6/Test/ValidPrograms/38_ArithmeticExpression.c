@@ -1,5 +1,5 @@
 int main() {
    int a;
-   a = 1 + 2*4 - 4;
+   a = 1 + 2*4 - 6;
    return a;
 }
