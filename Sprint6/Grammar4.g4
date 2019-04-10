@@ -4,14 +4,14 @@ grammar Grammar4;
 prog: funcdef* main;
 
 // ------------- functions
-main: 'int' 'main' '(' ')' bloc;
-
-funcdef: rtype ID '(' dparams? ')' bloc;
+main: 'int' 'main' '(' ')' '{' declaration* stat* rstat'}'
+    ;
+funcdef: rtype ID '(' dparams? ')' '{' declaration* stat* rstat?'}';
 
 fncall: ID '(' cparams? ')';
 
-// ------------- bloc
-bloc: '{' declaration* stat* rstat '}';
+// ------------- block
+block:  '{' stat* rstat? '}';
 
 // ------------- functions params
 dparams: dparam ',' dparams
@@ -36,13 +36,13 @@ variable: ID # decl
 rstat: 'return' expr ';';
 stat: ID '=' expr ';'   # asgn
     | fncall ';'        # callnr
-    | ifelse ';' # statifelse
+    | ifelse # statifelse
     ;
 
 // ------------- If else
-ifelse : 'if' '(' expr ')' bloc elserule? ;
+ifelse : 'if' '(' expr ')' block elserule? ;
 
-elserule : 'else' bloc # elseonly
+elserule : 'else' block # elseonly
       | 'else' ifelse # elseif ;
 
 // ------------- expressions
@@ -52,8 +52,8 @@ expr: expr MULT expr # mult
     | ID            # var
     | '(' expr ')'  # par
     | fncall        # callr
-    | expr compop expr # comp
-    | expr logop expr # log
+    | expr COMPOP expr # compexpr
+    | expr LOGOP expr # logexpr
     | UNOP expr # unopexpr
     ;
 
@@ -65,16 +65,16 @@ type: 'int' # typeINT
     ;
 
 // ------------- Comp operators
-compop: '==' # eqcomp
-      | '!=' # difcomp
-      | '<' # infcomp
-      | '>' # supcomp
+COMPOP: '==' 
+      | '!=' 
+      | '<' 
+      | '>' 
       ;
 
 // ------------- Logic operators
-logop: '&&' # and
-      | '||' # or
-      | '^' # xor
+LOGOP: '&&' 
+      | '||' 
+      | '^' 
       ;
 
 // ------------- terminals

@@ -33,6 +33,11 @@ void IRInstr::gen_asm(ostream &o){
       	    o << "subl -" << this->bb->cfg->get_var_index(params[2]) << "(%rbp), %eax" << endl;
 	    o << "movl %eax, -" << this->bb->cfg->get_var_index(params[0]) << "(%rbp)" << endl;
             break;
+      case neg:
+            o << "movl -" << this->bb->cfg->get_var_index(params[1]) << "(%rbp), %eax" << endl;
+            o << "negl %eax" << endl;
+            o << "movl %eax, -" << this->bb->cfg->get_var_index(params[0]) << "(%rbp)" << endl;
+            break;
 	case mul:
             o << "movl -" << this->bb->cfg->get_var_index(params[1]) << "(%rbp), %eax" << endl;
             o << "imull -" << this->bb->cfg->get_var_index(params[2]) << "(%rbp), %eax" << endl;
@@ -56,22 +61,26 @@ void IRInstr::gen_asm(ostream &o){
 	case cmp_eq:
             o << "movl -" << this->bb->cfg->get_var_index(params[0]) << "(%rbp), %eax" << endl;
             o << "cmpl -" << this->bb->cfg->get_var_index(params[1]) << "(%rbp), %eax" << endl;
-            o << "je" << bb->exit_false->label << endl;
+            o << "jne ." << bb->exit_false->label << endl;
             break;
-      case cmp_neq:
+  	case cmp_neq:
             o << "movl -" << this->bb->cfg->get_var_index(params[0]) << "(%rbp), %eax" << endl;
             o << "cmpl -" << this->bb->cfg->get_var_index(params[1]) << "(%rbp), %eax" << endl;
-            o << "jne" << bb->exit_false->label << endl;
+            o << "je ." << bb->exit_false->label << endl;
             break; 
 	case cmp_lt:
             o << "movl -" << this->bb->cfg->get_var_index(params[0]) << "(%rbp), %eax" << endl;
             o << "cmpl -" << this->bb->cfg->get_var_index(params[1]) << "(%rbp), %eax" << endl;
-            o << "jl" << bb->exit_false->label << endl;
+            o << "jl ." << bb->exit_false->label << endl;
             break;
 	case cmp_gt:
             o << "movl -" << this->bb->cfg->get_var_index(params[0]) << "(%rbp), %eax" << endl;
             o << "cmpl -" << this->bb->cfg->get_var_index(params[1]) << "(%rbp), %eax" << endl;
-            o << "jg" << bb->exit_false->label << endl;
+            o << "jg ." << bb->exit_false->label << endl;
+            break;
+      case no:
+            o << "cmpl $0, -" << this->bb->cfg->get_var_index(params[0]) << "(%rbp)" << endl;
+            o << "jne ." << bb->exit_false->label << endl;
             break;
 	case ret:
 	  o << "movl -" << this->bb->cfg->get_var_index(params[0]) << "(%rbp), %eax" << endl;
@@ -94,11 +103,13 @@ void BasicBlock::gen_asm(ostream &o){
             i->gen_asm(o);
       }
       if(exit_true == nullptr){
+			this->cfg->gen_asm_epilogue(o);
+			o << endl;
             return;
       }
 
-      o << "jmp   " << exit_true->label << endl;
-
+      o << "jmp ." << exit_true->label << endl;
+      o << endl;
       if(!exit_true->generated){
             o << "." << exit_true->label <<":" << endl;
             exit_true->gen_asm(o);
@@ -125,10 +136,7 @@ void CFG::add_bb(BasicBlock* bb){
 
 void CFG::gen_asm(ostream& o){
       gen_asm_prologue(o);
-      for(BasicBlock* cbb : bbs){
-            cbb->gen_asm(o);
-      }
-      gen_asm_epilogue(o);
+      bbs[0]->gen_asm(o);
       o << endl;
 }
 
@@ -179,4 +187,8 @@ int CFG::get_var_index(string name){
 
 Type CFG::get_var_type(string name){
       return SymbolType.at(name);
+}
+
+string CFG::new_BB_name(){
+      return "L" + to_string(bbs.size());
 }
