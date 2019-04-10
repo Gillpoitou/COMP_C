@@ -1,7 +1,11 @@
-int main(){
-      int x = 3;
-      int y = 4;
-      int z = 7;
+int test(int a, int b){
 
-      return z;
+      int result = a+b;
+     return result; 
 }
+
+int main(){
+      return 3;
+}
+
+

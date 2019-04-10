@@ -47,6 +47,17 @@ class StatementIfElse : public Statement
       virtual string toString();
 };
 
+class StatementWhile : public Statement
+{
+    public:
+      StatementWhile(Block* block): condition(nullptr), block(block) {}
+      StatementWhile(Expression * condition, Block* block) : condition(condition), block(block) {}
+      Expression * condition;
+      Block* block;
+
+      virtual string build_IR(CFG *);
+      virtual string toString();
+};
 
 class StatementReturn
 {

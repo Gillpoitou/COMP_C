@@ -100,8 +100,9 @@ class Visitor : public Grammar4BaseVisitor
             StatementReturn *rstat = (StatementReturn *)visit(ctx->rstat());
             if (staticAnalyse && rstat->value->type != rtype)
             {
-                  cerr << "Return type of " << name << " function does not match with return statement" << endl;
-                  exit(1);
+                  //scout << rstat->value->type << endl;
+                  cerr << "Return type of " << name << " function does not match return statement's type" << endl;
+                  //exit(1);
             }
 
             if (staticAnalyse)
@@ -431,6 +432,21 @@ class Visitor : public Grammar4BaseVisitor
       {
             Statement *statement = (StatementIfElse *)visit(ctx->ifelse());
             return (Statement *)statement;
+      }
+
+       virtual antlrcpp::Any visitStatwhile(Grammar4Parser::StatwhileContext *ctx) override
+      {
+            Statement * statement = (StatementWhile *) visit(ctx->whilerule());
+            return (Statement *) statement;
+      }
+
+      virtual antlrcpp::Any visitWhilerule(Grammar4Parser::WhileruleContext *ctx) override
+      {
+            Expression * cond = (Expression *) visit(ctx->expr());
+
+            Block * block = (Block *) visit(ctx->block());
+
+            return (StatementWhile *) new StatementWhile(cond, block);
       }
 
       virtual antlrcpp::Any visitIfelse(Grammar4Parser::IfelseContext *ctx) override
