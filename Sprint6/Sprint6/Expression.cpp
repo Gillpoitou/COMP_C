@@ -147,6 +147,15 @@ string ExpressionLogAnd::build_IR(CFG* ir_cfg){
 }
 
 string ExpressionLogOr::build_IR(CFG* ir_cfg){
+
+	  left->build_IR(ir_cfg);
+      BasicBlock* rightConditionBB = new BasicBlock(ir_cfg,ir_cfg->new_BB_name());
+      ir_cfg->add_bb(rightConditionBB);
+      rightConditionBB->exit_true = ir_cfg->current_bb->exit_true;
+      rightConditionBB->exit_false = ir_cfg->current_bb->exit_false;
+      ir_cfg->current_bb->exit_false = rightConditionBB;
+      ir_cfg->current_bb = rightConditionBB;   
+      right->build_IR(ir_cfg); 
       return "";
 }
 
