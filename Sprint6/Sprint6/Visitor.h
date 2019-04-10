@@ -16,7 +16,9 @@ using namespace std;
 class Visitor : public Grammar4BaseVisitor
 {
     public:
+      Visitor(bool staticAnalyse) : staticAnalyse(staticAnalyse){};
       SymbolTable *symbolTable;
+      bool staticAnalyse;
 
       // -------------------- It represents the program => It's the first visitor
       virtual antlrcpp::Any visitProg(Grammar4Parser::ProgContext *ctx) override
@@ -24,7 +26,10 @@ class Visitor : public Grammar4BaseVisitor
             //cout << "2.1" << endl;
 
             //Creating the symbolTable
-            this->symbolTable = new SymbolTable();
+            if (staticAnalyse)
+            {
+                  this->symbolTable = new SymbolTable();
+            }
 
             Function *f;
 
@@ -57,7 +62,7 @@ class Visitor : public Grammar4BaseVisitor
             // -------------------- Name = "main"
             string name = "main";
 
-            if (!symbolTable->addFunction(name, rtype))
+            if (staticAnalyse && !symbolTable->addFunction(name, rtype))
             {
                   cerr << "Function " << name << " has already been defined" << endl;
                   exit(1);
@@ -93,13 +98,16 @@ class Visitor : public Grammar4BaseVisitor
 
             // -------------------- Statement Return => it exisits
             StatementReturn *rstat = (StatementReturn *)visit(ctx->rstat());
-            if (rstat->value->type != rtype)
+            if (staticAnalyse && rstat->value->type != rtype)
             {
                   cerr << "Return type of " << name << " function does not match with return statement" << endl;
                   exit(1);
             }
 
-            symbolTable->functionEnd();
+            if (staticAnalyse)
+            {
+                  symbolTable->functionEnd();
+            }
 
             return (Function *)new Function(rtype, name, params, declList, statList, rstat);
       }
@@ -115,7 +123,7 @@ class Visitor : public Grammar4BaseVisitor
             // -------------------- Name
             string name = ctx->ID()->getText().c_str();
 
-            if (!symbolTable->addFunction(name, rtype))
+            if (staticAnalyse && !symbolTable->addFunction(name, rtype))
             {
                   cerr << "Function " << name << " has already been defined" << endl;
                   exit(1);
@@ -159,7 +167,7 @@ class Visitor : public Grammar4BaseVisitor
             if (ctx->rstat())
             {
                   rstat = (StatementReturn *)visit(ctx->rstat());
-                  if (rstat->value->type != rtype)
+                  if (staticAnalyse && rstat->value->type != rtype)
                   {
                         cerr << "Return type of " << name << " function does not match with return statement" << endl;
                         exit(1);
@@ -178,20 +186,22 @@ class Visitor : public Grammar4BaseVisitor
       // -------------------- Function Call
       virtual antlrcpp::Any visitFncall(Grammar4Parser::FncallContext *ctx) override
       {
-            //TODO: Modify to get the type of the function with symbolTable
-
             // -------------------- Name  of the called function
             string name = ctx->ID()->getText().c_str();
 
             // -------------------- Type of the called function
-            Symbol *functionSymbol = symbolTable->getSymbol(name);
-            if (!functionSymbol)
+            Type type = INT; //TODO: modif
+            if (staticAnalyse)
             {
-                  cerr << "Function " << name << " does not exists" << endl;
-                  exit(1);
-            }
+                  Symbol *functionSymbol = symbolTable->getSymbol(name);
+                  if (!functionSymbol)
+                  {
+                        cerr << "Function " << name << " does not exists" << endl;
+                        exit(1);
+                  }
 
-            Type type = functionSymbol->type;
+                  type = functionSymbol->type;
+            }
 
             // -------------------- Params values sent to the called function
             vector<Expression *> *params = new vector<Expression *>(0);
@@ -201,10 +211,6 @@ class Visitor : public Grammar4BaseVisitor
             }
 
             return (ExpressionCall *)new ExpressionCall(type, name, params);
-
-            //check  params match formal params of the func
-            //check  give a the return type to the expr
-            //check the function exists
       }
 
       virtual antlrcpp::Any visitBlock(Grammar4Parser::BlockContext *ctx) override
@@ -263,7 +269,7 @@ class Visitor : public Grammar4BaseVisitor
             // -------------------- Name
             string name = ctx->ID()->getText().c_str();
 
-            if (!symbolTable->addVar(name, type))
+            if (staticAnalyse && !symbolTable->addVar(name, type))
             {
                   cerr << "Variable " << name << " has already been declared" << endl;
                   exit(1);
@@ -310,7 +316,7 @@ class Visitor : public Grammar4BaseVisitor
             for (Declaration *d : *decls)
             {
                   d->left->type = type;
-                  if (!symbolTable->addVar(d->left->name, d->left->type))
+                  if (staticAnalyse && !symbolTable->addVar(d->left->name, d->left->type))
                   {
                         cerr << "Variable " << d->left->name << " has already been declared" << endl;
                         exit(1);
@@ -389,12 +395,16 @@ class Visitor : public Grammar4BaseVisitor
       {
             // -------------------- The existing variable
             string name = ctx->ID()->getText().c_str();
-            Symbol *var = symbolTable->getSymbol(name);
-            if (!var)
+            if (staticAnalyse)
             {
-                  cerr << "Variable " << name << " does not exists" << endl;
-                  exit(1);
+                  Symbol *var = symbolTable->getSymbol(name);
+                  if (!var)
+                  {
+                        cerr << "Variable " << name << " does not exists" << endl;
+                        exit(1);
+                  }
             }
+
             ExpressionVar *left = new ExpressionVar(name);
 
             // -------------------- The value
@@ -419,34 +429,35 @@ class Visitor : public Grammar4BaseVisitor
 
       virtual antlrcpp::Any visitStatifelse(Grammar4Parser::StatifelseContext *ctx) override
       {
-            Statement * statement = (StatementIfElse *) visit(ctx->ifelse());
-            return (Statement *) statement;
+            Statement *statement = (StatementIfElse *)visit(ctx->ifelse());
+            return (Statement *)statement;
       }
 
       virtual antlrcpp::Any visitIfelse(Grammar4Parser::IfelseContext *ctx) override
       {
-            Expression * cond = (Expression *) visit(ctx->expr());
+            Expression *cond = (Expression *)visit(ctx->expr());
 
-            Block * block = (Block *) visit(ctx->block());
+            Block *block = (Block *)visit(ctx->block());
 
-            StatementIfElse * elserule = nullptr;
+            StatementIfElse *elserule = nullptr;
 
-            if(ctx->elserule()){
-                  elserule = (StatementIfElse *) visit(ctx->elserule());
+            if (ctx->elserule())
+            {
+                  elserule = (StatementIfElse *)visit(ctx->elserule());
             }
-            return (StatementIfElse *) new StatementIfElse(cond, block, elserule);
+            return (StatementIfElse *)new StatementIfElse(cond, block, elserule);
       }
 
       virtual antlrcpp::Any visitElseonly(Grammar4Parser::ElseonlyContext *ctx) override
       {
-            Block * block = (Block *) visit(ctx->block());
+            Block *block = (Block *)visit(ctx->block());
 
-            return (StatementIfElse *) new StatementIfElse(block);
+            return (StatementIfElse *)new StatementIfElse(block);
       }
 
       virtual antlrcpp::Any visitElseif(Grammar4Parser::ElseifContext *ctx) override
       {
-            return (StatementIfElse *) visit(ctx->ifelse());
+            return (StatementIfElse *)visit(ctx->ifelse());
       }
 
       // -------------------- Expression Par
@@ -529,13 +540,17 @@ class Visitor : public Grammar4BaseVisitor
       {
             string name = ctx->ID()->getText().c_str();
             //cout << "2.1.4.1" << endl;
-            Symbol *var = symbolTable->getSymbol(name);
-            //cout << "2.1.4.2" << endl;
-            if (var == nullptr)
+            if (staticAnalyse)
             {
-                  cerr << "Variable " << name << " does not exists" << endl;
-                  exit(1);
+                  Symbol *var = symbolTable->getSymbol(name);
+                  //cout << "2.1.4.2" << endl;
+                  if (var == nullptr)
+                  {
+                        cerr << "Variable " << name << " does not exists" << endl;
+                        exit(1);
+                  }
             }
+
             //cout << "2.1.4.3" << endl;
             return (Expression *)new ExpressionVar(name);
       }
