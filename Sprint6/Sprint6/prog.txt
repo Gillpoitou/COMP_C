@@ -3,9 +3,9 @@ int main(){
       int y = 4;
       int z = 7;
       
-      while(x!=1){
-            x =x-1;
-      } 
+      if(x != y){
+            z = 9;
+      }
 
       return z;
 }
