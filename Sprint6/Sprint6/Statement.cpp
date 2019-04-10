@@ -143,4 +143,5 @@ string StatementIfElse::build_IR(CFG *ir_cfg){
             elserule->build_IR(ir_cfg);
       }
       ir_cfg->current_bb = afterIfBB;
+      return "";
 }

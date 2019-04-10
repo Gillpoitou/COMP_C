@@ -93,11 +93,11 @@ class Visitor : public Grammar4BaseVisitor
 
             // -------------------- Statement Return => it exisits
             StatementReturn *rstat = (StatementReturn *)visit(ctx->rstat());
-            if (rstat->value->type != rtype)
+            /*if (rstat->value->type != rtype)
             {
                   cerr << "Return type of " << name << " function does not match with return statement" << endl;
                   exit(1);
-            }
+            }*/
 
             symbolTable->functionEnd();
 

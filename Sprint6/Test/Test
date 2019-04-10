@@ -5,7 +5,7 @@ Tester(){
 	./main $name
 }
 clear
-menu=( $(find ./FrontEndTests/ -maxdepth 1 -type d) )
+menu=( $(find ./ -maxdepth 1 -type d) )
 j=0
 for i in ${menu[@]};
 do 
@@ -40,6 +40,13 @@ for i in ${liste[@]};
 do 
 	echo $i;
 	echo "$(./../compilo $i ./../prog.s)"
+	if [ -s ./../prog.s ]; then
+	echo "$(gcc ./../prog.s -o ./../exe)"
+	if [ -f ./../exe ]; then
+		./../exe
+		echo $?
+	fi	
+	fi
 done
 
 
