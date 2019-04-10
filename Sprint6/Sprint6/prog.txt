@@ -3,12 +3,9 @@ int main(){
       int y = 4;
       int z = 7;
 
-      if(x == y && x < y){
+      if(!x == y){
             z = x;
-      }else if(z < x && z < y){
-            z =10;
-      }else{
-            z=9;
       }
+      
       return z;
 }
