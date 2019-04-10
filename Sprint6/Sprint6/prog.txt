@@ -20,7 +20,7 @@ int fact(int x){
 
 int main(){
       int a = 3, b = 4;
-      int z = fact(z);
+      int z = fact(a);
       return z;
 }
 
