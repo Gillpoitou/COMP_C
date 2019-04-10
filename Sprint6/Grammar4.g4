@@ -37,9 +37,13 @@ rstat: 'return' expr ';';
 stat: ID '=' expr ';'   # asgn
     | fncall ';'        # callnr
     | ifelse # statifelse
+    | whilerule #statwhile
     ;
 
-// ------------- If else
+// ------------- while
+whilerule : 'while' '(' expr ')' block ;
+
+// ------------- if else
 ifelse : 'if' '(' expr ')' block elserule? ;
 
 elserule : 'else' block # elseonly

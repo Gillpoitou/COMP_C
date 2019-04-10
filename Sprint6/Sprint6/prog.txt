@@ -2,10 +2,10 @@ int main(){
       int x = 3;
       int y = 4;
       int z = 7;
-
-      if(!x == y){
-            z = x;
-      }
       
+      while(x!=1){
+            x =x-1;
+      } 
+
       return z;
 }
