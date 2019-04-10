@@ -150,7 +150,7 @@ int main(int argc, char *argv[])
       if(optionsValues[ASM]){
             ofstream asmFile(outputFilename, std::ofstream::out);
             result->build_ASM(asmFile);
-            cout << "Build success : ASM generated" << endl;
+            cout << "Build success : ASM generated in file \"" << outputFilename << "\"" << endl;
       }
 
       return 0;

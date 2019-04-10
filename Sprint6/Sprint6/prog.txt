@@ -1,11 +1,27 @@
-int test(int a, int b){
+int diff(int x, int y){
+      return x - y;     
+}
 
-      int result = a+b;
-     return result; 
+int min(int x, int y){
+      if(x < y){
+            return x;
+      } else {
+            return y;
+      }
+}
+
+int fact(int x){
+      int res = 1;
+      if(x != 0){
+            res = fact(x - 1) * x;
+      }
+      return res;
 }
 
 int main(){
-      return 3;
+      int a = 3, b = 4;
+      int z = fact(z);
+      return z;
 }
 
 
