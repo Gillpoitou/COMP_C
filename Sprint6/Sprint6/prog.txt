@@ -1,11 +1,20 @@
+int test(int a, int b){
+
+      int result = a+b;
+     return result; 
+}
+
 int main(){
-      int x = 3;
-      int y = 4;
-      int z = 7;
-      
-      if(x != y){
-            z = 9;
+      int x = 0, y = 1;
+      int z = 0;
+
+      if(x == 0 && y == 1){
+            while(x != 5){
+                  x = test(x,y);
+            }
       }
 
-      return z;
+      return x;
 }
+
+

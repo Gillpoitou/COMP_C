@@ -2,6 +2,7 @@
 #include "Expression.h"
 #include "Block.h"
 #include "IR.h"
+#include <string.h>
 
 string Statement::toString()
 {
@@ -99,6 +100,7 @@ string StatementReturn::build_IR(CFG *ir_cfg)
       vector<string> params;
       params.push_back(var_name_ret);
       ir_cfg->current_bb->add_IRInstr(IRInstr::Operation::ret, INT, params);
+      ir_cfg->current_bb->exit_true = nullptr;
       return "";
 }
 
@@ -144,14 +146,21 @@ string StatementIfElse::build_IR(CFG *ir_cfg){
 
 string StatementWhile::build_IR(CFG *ir_cfg)
 {
-      /*if(condition != nullptr){
-            condition->build_IR(ir_cfg);
-      }
-      BasicBlock* afterIfBB = new BasicBlock(ir_cfg, ir_cfg->new_BB_name());
-      ir_cfg->add_bb(afterIfBB);
-	  afterIfBB->exit_true =  ir_cfg->current_bb->exit_true;
-      afterIfBB->exit_false =  ir_cfg->current_bb->exit_false;*/
-      //FULL ZEUB KLODO
-
+      BasicBlock* afterWhileBB = new BasicBlock(ir_cfg,ir_cfg->new_BB_name());
+      ir_cfg->add_bb(afterWhileBB);
+      BasicBlock* conditionBB = new BasicBlock(ir_cfg,ir_cfg->new_BB_name());
+      ir_cfg->add_bb(conditionBB);
+      afterWhileBB->exit_false = ir_cfg->current_bb->exit_true;
+      ir_cfg->current_bb->exit_true = conditionBB;
+      ir_cfg->current_bb = conditionBB;
+      condition->build_IR(ir_cfg);
+      BasicBlock* loopBB = new BasicBlock(ir_cfg,ir_cfg->new_BB_name());
+      ir_cfg->add_bb(loopBB);
+      conditionBB->exit_true = loopBB;
+      conditionBB->exit_false = afterWhileBB;
+      loopBB->exit_true = conditionBB;
+      ir_cfg->current_bb = loopBB;
+      block->build_IR(ir_cfg);
+      ir_cfg->current_bb = afterWhileBB;
       return "";
 }
