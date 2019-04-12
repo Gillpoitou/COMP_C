@@ -35,7 +35,10 @@ class IRInstr {
 		cmp_lt,
 		cmp_gt,
 		no,
-		ret
+		ret,
+		eq_if,
+		bool_1,
+		bool_0
 	} Operation;
 
 

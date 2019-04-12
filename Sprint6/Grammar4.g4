@@ -52,13 +52,14 @@ elserule : 'else' block # elseonly
 // ------------- expressions
 expr: expr MULT expr # mult
     | expr PLUSMINUS expr # plusminus
-    | INT           # const
-    | ID            # var
-    | '(' expr ')'  # par
-    | fncall        # callr
+    | UNOP expr # unopexpr
     | expr COMPOP expr # compexpr
     | expr LOGOP expr # logexpr
-    | UNOP expr # unopexpr
+    | INT           # const
+    | ID            # var
+    | fncall        # callr
+    | '(' expr ')'  # par
+    | fncall        # callr
     ;
 
 // ------------- types
