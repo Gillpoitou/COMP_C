@@ -92,7 +92,6 @@ int main(int argc, char *argv[])
                   else if (optionsNames[OPT].compare(argv[i]) == 0)
                   {
                         optionsValues[OPT] = true;
-                        cout << "Optimization is not implemented : ignored" << endl;
                   }
                   else if (optionsNames[STATIC_ANALYSE].compare(argv[i]) == 0)
                   {
