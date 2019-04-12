@@ -20,6 +20,7 @@ void IRInstr::gen_asm(ostream &o)
       {
             o << "movl $" << params[1] << ", -" << this->bb->cfg->get_var_index(params[0]) << "(%rbp)" << endl;
             break;
+
       }
       case add:
       {
@@ -34,7 +35,7 @@ void IRInstr::gen_asm(ostream &o)
             o << "subl -" << this->bb->cfg->get_var_index(params[2]) << "(%rbp), %eax" << endl;
             o << "movl %eax, -" << this->bb->cfg->get_var_index(params[0]) << "(%rbp)" << endl;
             break;
-      case neg:
+      	case neg:
             o << "movl -" << this->bb->cfg->get_var_index(params[1]) << "(%rbp), %eax" << endl;
             o << "negl %eax" << endl;
             o << "movl %eax, -" << this->bb->cfg->get_var_index(params[0]) << "(%rbp)" << endl;
@@ -61,35 +62,56 @@ void IRInstr::gen_asm(ostream &o)
             o << "call  " << params[0] << endl;
             o << "movl  %eax,-" << this->bb->cfg->get_var_index(params[1]) << "(%rbp)" << endl;
             break;
-      case cmp_eq:
-            o << "movl -" << this->bb->cfg->get_var_index(params[0]) << "(%rbp), %eax" << endl;
-            o << "cmpl -" << this->bb->cfg->get_var_index(params[1]) << "(%rbp), %eax" << endl;
-            o << "jne ." << bb->exit_false->label << endl;
+				case cmp_eq:
+            o << "movl -" << this->bb->cfg->get_var_index(params[1]) << "(%rbp), %eax" << endl;
+            o << "cmpl -" << this->bb->cfg->get_var_index(params[2]) << "(%rbp), %eax" << endl;
+            o << "sete %al" << endl;
+            o << "movzbl %al, %eax" << endl;
+            o << "movl  %eax, -" << this->bb->cfg->get_var_index(params[0]) << "(%rbp)" << endl;
             break;
-      case cmp_neq:
-            o << "movl -" << this->bb->cfg->get_var_index(params[0]) << "(%rbp), %eax" << endl;
-            o << "cmpl -" << this->bb->cfg->get_var_index(params[1]) << "(%rbp), %eax" << endl;
-            o << "je ." << bb->exit_false->label << endl;
+  			case cmp_neq:
+            o << "movl -" << this->bb->cfg->get_var_index(params[1]) << "(%rbp), %eax" << endl;
+            o << "cmpl -" << this->bb->cfg->get_var_index(params[2]) << "(%rbp), %eax" << endl;
+            o << "setne %al" << endl;
+            o << "movzbl %al, %eax" << endl;
+            o << "movl  %eax, -" << this->bb->cfg->get_var_index(params[0]) << "(%rbp)" << endl;
+            break; 
+				case cmp_lt:
+						o << "movl -" << this->bb->cfg->get_var_index(params[1]) << "(%rbp), %eax" << endl;
+            o << "cmpl -" << this->bb->cfg->get_var_index(params[2]) << "(%rbp), %eax" << endl;
+            o << "setg %al" << endl;
+            o << "movzbl %al, %eax" << endl;
+            o << "movl  %eax, -" << this->bb->cfg->get_var_index(params[0]) << "(%rbp)" << endl;
             break;
-      case cmp_lt:
-            o << "movl -" << this->bb->cfg->get_var_index(params[0]) << "(%rbp), %eax" << endl;
-            o << "cmpl -" << this->bb->cfg->get_var_index(params[1]) << "(%rbp), %eax" << endl;
-            o << "jl ." << bb->exit_false->label << endl;
+				case cmp_gt:
+            o << "movl -" << this->bb->cfg->get_var_index(params[1]) << "(%rbp), %eax" << endl;
+            o << "cmpl -" << this->bb->cfg->get_var_index(params[2]) << "(%rbp), %eax" << endl;
+            o << "setl %al" << endl;
+            o << "movzbl %al, %eax" << endl;
+            o << "movl  %eax, -" << this->bb->cfg->get_var_index(params[0]) << "(%rbp)" << endl;
             break;
-      case cmp_gt:
-            o << "movl -" << this->bb->cfg->get_var_index(params[0]) << "(%rbp), %eax" << endl;
-            o << "cmpl -" << this->bb->cfg->get_var_index(params[1]) << "(%rbp), %eax" << endl;
-            o << "jg ." << bb->exit_false->label << endl;
+      	case no:
+            o << "cmpl $0, -" << this->bb->cfg->get_var_index(params[1]) << "(%rbp)" << endl;
+            o << "sete %al" << endl;
+            o << "movzbl %al, %eax" << endl;
+            o << "movl  %eax, -" << this->bb->cfg->get_var_index(params[0]) << "(%rbp)" << endl;
             break;
-      case no:
-            o << "cmpl $0, -" << this->bb->cfg->get_var_index(params[0]) << "(%rbp)" << endl;
-            o << "jne ." << bb->exit_false->label << endl;
+				case ret:
+	  				o << "movl -" << this->bb->cfg->get_var_index(params[0]) << "(%rbp), %eax" << endl;
+	  				break;
+				case eq_if:
+						o << "cmpl $0, -" << this->bb->cfg->get_var_index(params[0]) << "(%rbp)" << endl;
+						o << "je ." << bb->exit_false->label << endl;
+	  				break;
+				case bool_1:
+						o << "movl $1, -" << this->bb->cfg->get_var_index(params[0]) << "(%rbp)" << endl;
+						break;
+				case bool_0:
+						o << "movl $0, -" << this->bb->cfg->get_var_index(params[0]) << "(%rbp)" << endl;
+						break;
+      	default:
             break;
-      case ret:
-            o << "movl -" << this->bb->cfg->get_var_index(params[0]) << "(%rbp), %eax" << endl;
-      default:
-            break;
-      }
+  	}
 }
 
 BasicBlock::BasicBlock(CFG *cfg, string entry_label)
