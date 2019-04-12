@@ -1,3 +1,8 @@
+int foot(int a){
+    int a = 3;
+    return a;
+}
+
 int main(){
-    return foot();
+    return foot(1);
 }
