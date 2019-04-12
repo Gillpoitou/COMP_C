@@ -26,19 +26,13 @@ int main(int argc, char *argv[])
                   content += line + '\n';
             }
             myfile.close();
-
-            //cout << "1" << endl;
             ANTLRInputStream input(content);
             Grammar3Lexer lexer(&input);
             CommonTokenStream tokens(&lexer);
             Grammar3Parser parser(&tokens);
             tree::ParseTree *tree = parser.prog();
-            //cout << tree->toStringTree() << endl;
             Visitor visitor;
-            // cout << "2" << endl;
             Function *result = (Function *)visitor.visit(tree);
-            //cout << "3" << endl;
-            //int resultat = (int)visitor.visit(tree);
             cout << "Résultat " << result->toString() << endl;
             result->buildASM(asmFile);
             cout << "build success ASM generated" << endl;

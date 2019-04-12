@@ -2,5 +2,5 @@
 
 dossier="Sprint$1"
 
-echo "$($dossier/compilo $dossier/$dossier/prog.txt -c $dossier/prog.s -a -s)"
+echo "$($dossier/compilo $dossier/$dossier/prog.txt -c $dossier/prog.s -a -s -o)"
 
