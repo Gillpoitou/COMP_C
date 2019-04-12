@@ -35,7 +35,7 @@ j=0
 for i in ${liste[@]};
 do 
 	echo $i;
-	echo "$(./../compilo $i ./../prog.s)"
+	echo "$(./../compilo $i -c ./../prog.s -a -s)"
 	if [ -s ./../prog.s ]; then
 	echo "$(gcc ./../prog.s -o ./../exe)"
 	if [ -f ./../exe ]; then
