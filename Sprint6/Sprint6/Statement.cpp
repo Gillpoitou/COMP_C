@@ -104,32 +104,33 @@ string StatementReturn::build_IR(CFG *ir_cfg)
 
 string StatementIfElse::build_IR(CFG *ir_cfg){
 
-
-
-	  BasicBlock* afterIfBB = new BasicBlock(ir_cfg, ir_cfg->new_BB_name());
+			BasicBlock* afterIfBB = new BasicBlock(ir_cfg, ir_cfg->new_BB_name());
       ir_cfg->add_bb(afterIfBB);
-	  afterIfBB->exit_true =  ir_cfg->current_bb->exit_true;
+	  	afterIfBB->exit_true =  ir_cfg->current_bb->exit_true;
       afterIfBB->exit_false =  ir_cfg->current_bb->exit_false;
 
-	  BasicBlock* thenBB = new BasicBlock(ir_cfg, ir_cfg->new_BB_name());
+	  	BasicBlock* thenBB = new BasicBlock(ir_cfg, ir_cfg->new_BB_name());
       ir_cfg->add_bb(thenBB);
       thenBB->exit_true = afterIfBB;
       thenBB->exit_false = nullptr;
 
-	  ir_cfg->current_bb->exit_true = thenBB;
-	  ir_cfg->current_bb->exit_false = afterIfBB;
+	  	ir_cfg->current_bb->exit_true = thenBB;
+	  	ir_cfg->current_bb->exit_false = afterIfBB;
 
       BasicBlock* elseBB = nullptr;
       if(elserule != nullptr){
-            elseBB = new BasicBlock(ir_cfg, ir_cfg->new_BB_name());
-            ir_cfg->add_bb(elseBB);
-			elseBB->exit_true = afterIfBB;
-      		elseBB->exit_false = nullptr;
-			ir_cfg->current_bb->exit_false = elseBB;
+          	elseBB = new BasicBlock(ir_cfg, ir_cfg->new_BB_name());
+          	ir_cfg->add_bb(elseBB);
+						elseBB->exit_true = afterIfBB;
+      			elseBB->exit_false = nullptr;
+						ir_cfg->current_bb->exit_false = elseBB;
       }
-            if(condition != nullptr){
-      		condition->build_IR(ir_cfg);
-	  }
+      if(condition != nullptr){
+  					string conditionVar = condition->build_IR(ir_cfg);
+						vector<string> params;
+      			params.push_back(conditionVar);
+						ir_cfg->current_bb->add_IRInstr(IRInstr::Operation::eq_if, INT, params);
+	  	}
       ir_cfg->current_bb = thenBB;
       block->build_IR(ir_cfg);
 
@@ -144,14 +145,31 @@ string StatementIfElse::build_IR(CFG *ir_cfg){
 
 string StatementWhile::build_IR(CFG *ir_cfg)
 {
-      /*if(condition != nullptr){
-            condition->build_IR(ir_cfg);
-      }
-      BasicBlock* afterIfBB = new BasicBlock(ir_cfg, ir_cfg->new_BB_name());
-      ir_cfg->add_bb(afterIfBB);
-	  afterIfBB->exit_true =  ir_cfg->current_bb->exit_true;
-      afterIfBB->exit_false =  ir_cfg->current_bb->exit_false;*/
-      //FULL ZEUB KLODO
+			BasicBlock* afterWhileBB = new BasicBlock(ir_cfg,ir_cfg->new_BB_name());
+      ir_cfg->add_bb(afterWhileBB);
+			afterWhileBB->exit_false = ir_cfg->current_bb->exit_true;
+
+      BasicBlock* conditionBB = new BasicBlock(ir_cfg,ir_cfg->new_BB_name());
+      ir_cfg->add_bb(conditionBB);
+
+      ir_cfg->current_bb->exit_true = conditionBB;
+      ir_cfg->current_bb = conditionBB;
+
+      string conditionVar = condition->build_IR(ir_cfg);
+			vector<string> params;
+			params.push_back(conditionVar);
+			ir_cfg->current_bb->add_IRInstr(IRInstr::Operation::eq_if, INT, params);
+
+      BasicBlock* loopBB = new BasicBlock(ir_cfg,ir_cfg->new_BB_name());
+      ir_cfg->add_bb(loopBB);
+      conditionBB->exit_true = loopBB;
+      conditionBB->exit_false = afterWhileBB;
+      loopBB->exit_true = conditionBB;
+
+      ir_cfg->current_bb = loopBB;
+      block->build_IR(ir_cfg);
+
+      ir_cfg->current_bb = afterWhileBB;
 
       return "";
 }

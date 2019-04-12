@@ -144,42 +144,101 @@ string ExpressionUnaryNo::build_IR(CFG* ir_cfg){
 }
 
 string ExpressionLogAnd::build_IR(CFG* ir_cfg){
-      
-      left->build_IR(ir_cfg);
-      BasicBlock* rightConditionBB = new BasicBlock(ir_cfg,ir_cfg->new_BB_name());
-      ir_cfg->add_bb(rightConditionBB);
-      rightConditionBB->exit_true = ir_cfg->current_bb->exit_true;
-      rightConditionBB->exit_false = ir_cfg->current_bb->exit_false;
-      ir_cfg->current_bb->exit_true = rightConditionBB;
-      ir_cfg->current_bb = rightConditionBB;   
-      right->build_IR(ir_cfg); 
-      return "";
+
+			string leftBoolExpr = this->left->build_IR(ir_cfg);
+			string rightBoolExpr = this->right->build_IR(ir_cfg);
+			string var = ir_cfg->create_new_tempvar(INT);
+
+			BasicBlock* afterConditionBB = new BasicBlock(ir_cfg,ir_cfg->new_BB_name());
+      ir_cfg->add_bb(afterConditionBB);
+      afterConditionBB->exit_true = ir_cfg->current_bb->exit_true;
+      afterConditionBB->exit_false = ir_cfg->current_bb->exit_false;
+
+			BasicBlock* trueBB = new BasicBlock(ir_cfg,ir_cfg->new_BB_name());
+      ir_cfg->add_bb(trueBB);
+      trueBB->exit_true = afterConditionBB;
+      trueBB->exit_false = nullptr;
+
+			BasicBlock* falseBB = new BasicBlock(ir_cfg,ir_cfg->new_BB_name());
+      ir_cfg->add_bb(falseBB);
+      falseBB->exit_true = afterConditionBB;
+      falseBB->exit_false = nullptr;
+
+			BasicBlock* secConditionBB = new BasicBlock(ir_cfg, ir_cfg->new_BB_name());
+			ir_cfg->add_bb(secConditionBB);
+			secConditionBB->exit_true = trueBB;
+      secConditionBB->exit_false = falseBB;	
+
+			ir_cfg->current_bb->exit_true = secConditionBB;
+			ir_cfg->current_bb->exit_false = falseBB;
+
+			vector<string>params1;
+			params1.push_back(leftBoolExpr);
+			ir_cfg->current_bb->add_IRInstr(IRInstr::Operation::eq_if, INT, params1);
+
+			ir_cfg->current_bb = secConditionBB;
+			vector<string>params2;
+			params2.push_back(rightBoolExpr);
+			ir_cfg->current_bb->add_IRInstr(IRInstr::Operation::eq_if, INT, params2);
+
+			vector<string>params3;
+			params3.push_back(var);
+			ir_cfg->current_bb = trueBB;
+			ir_cfg->current_bb->add_IRInstr(IRInstr::Operation::bool_1, INT, params3);
+			ir_cfg->current_bb = falseBB;
+			ir_cfg->current_bb->add_IRInstr(IRInstr::Operation::bool_0, INT, params3);
+
+			ir_cfg->current_bb = afterConditionBB;
+			return var;
 }
 
 string ExpressionLogOr::build_IR(CFG* ir_cfg){
 
-	    string leftName = left->build_IR(ir_cfg);
-        string rightName = right->build_IR(ir_cfg);
-        BasicBlock* rightConditionBB = new BasicBlock(ir_cfg,ir_cfg->new_BB_name());
-        ir_cfg->add_bb(rightConditionBB);
-        BasicBlock* trueBB = new BasicBlock(ir_cfg,ir_cfg->new_BB_name());
-        ir_cfg->add_bb(trueBB);
-        BasicBlock* falseBB = new BasicBlock(ir_cfg,ir_cfg->new_BB_name());
-        ir_cfg->add_bb(falseBB);
+	    string leftBoolExpr = this->left->build_IR(ir_cfg);
+			string rightBoolExpr = this->right->build_IR(ir_cfg);
+			string var = ir_cfg->create_new_tempvar(INT);
 
-        vector<string> params1;
-        params1.push_back(leftName);
-        //ir_cfg->current_bb->add_IRInstr(IRInstr::Operation::jmpT, INT, params);
-        
-        //Continue here and in IR to add jmpT / jmpF ... ?
+			BasicBlock* afterConditionBB = new BasicBlock(ir_cfg,ir_cfg->new_BB_name());
+      ir_cfg->add_bb(afterConditionBB);
+      afterConditionBB->exit_true = ir_cfg->current_bb->exit_true;
+      afterConditionBB->exit_false = ir_cfg->current_bb->exit_false;
 
+			BasicBlock* trueBB = new BasicBlock(ir_cfg,ir_cfg->new_BB_name());
+      ir_cfg->add_bb(trueBB);
+      trueBB->exit_true = afterConditionBB;
+      trueBB->exit_false = nullptr;
 
-      rightConditionBB->exit_true = ir_cfg->current_bb->exit_true;
-      rightConditionBB->exit_false = ir_cfg->current_bb->exit_false;
-      ir_cfg->current_bb->exit_false = rightConditionBB;
-      ir_cfg->current_bb = rightConditionBB;   
-      right->build_IR(ir_cfg); 
-      return "";
+			BasicBlock* falseBB = new BasicBlock(ir_cfg,ir_cfg->new_BB_name());
+      ir_cfg->add_bb(falseBB);
+      falseBB->exit_true = afterConditionBB;
+      falseBB->exit_false = nullptr;
+
+			BasicBlock* secConditionBB = new BasicBlock(ir_cfg, ir_cfg->new_BB_name());
+			ir_cfg->add_bb(secConditionBB);
+			secConditionBB->exit_true = trueBB;
+      secConditionBB->exit_false = falseBB;	
+
+			ir_cfg->current_bb->exit_true = trueBB;
+			ir_cfg->current_bb->exit_false = secConditionBB;
+
+			vector<string>params1;
+			params1.push_back(leftBoolExpr);
+			ir_cfg->current_bb->add_IRInstr(IRInstr::Operation::eq_if, INT, params1);
+
+			ir_cfg->current_bb = secConditionBB;
+			vector<string>params2;
+			params2.push_back(rightBoolExpr);
+			ir_cfg->current_bb->add_IRInstr(IRInstr::Operation::eq_if, INT, params2);
+
+			vector<string>params3;
+			params3.push_back(var);
+			ir_cfg->current_bb = trueBB;
+			ir_cfg->current_bb->add_IRInstr(IRInstr::Operation::bool_1, INT, params3);
+			ir_cfg->current_bb = falseBB;
+			ir_cfg->current_bb->add_IRInstr(IRInstr::Operation::bool_0, INT, params3);
+
+			ir_cfg->current_bb = afterConditionBB;
+			return var;
 }
 
 string ExpressionLogXor::build_IR(CFG* ir_cfg){
