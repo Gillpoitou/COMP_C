@@ -16,12 +16,7 @@ class Function
       string toString()
       {
             string result = "Function = { \n";
-            // result += "type : " + rtype + ", \n";
             result += "name : " + name + ", \n";
-            // for (vector<ExpressionVar *>::iterator it = params->begin(); it != params->end(); ++it)
-            // {
-            //       result += ((ExpressionVar *)*it)->toString() + "\n";
-            // }
             for (vector<Declaration *>::iterator it = declarations->begin(); it != declarations->end(); ++it)
             {
                   result += ((Declaration *)*it)->toString() + "\n";
@@ -33,7 +28,9 @@ class Function
             if (rstat)
             {
                   return result += "rstat : " + rstat->toString() + "}\n";
-            } else {
+            }
+            else
+            {
                   return result += "}\n";
             }
       }

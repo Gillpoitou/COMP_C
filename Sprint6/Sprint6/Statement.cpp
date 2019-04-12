@@ -2,6 +2,7 @@
 #include "Expression.h"
 #include "Block.h"
 #include "IR.h"
+#include <string.h>
 
 string Statement::toString()
 {
@@ -99,6 +100,7 @@ string StatementReturn::build_IR(CFG *ir_cfg)
       vector<string> params;
       params.push_back(var_name_ret);
       ir_cfg->current_bb->add_IRInstr(IRInstr::Operation::ret, INT, params);
+      ir_cfg->current_bb->exit_true = nullptr;
       return "";
 }
 
