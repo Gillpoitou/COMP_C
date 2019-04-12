@@ -16,9 +16,10 @@ using namespace std;
 class Visitor : public Grammar4BaseVisitor
 {
     public:
-      Visitor(bool staticAnalyse) : staticAnalyse(staticAnalyse){};
+      Visitor(bool staticAnalyse, bool optimization) : staticAnalyse(staticAnalyse), optimization(optimization){};
       SymbolTable *symbolTable;
       bool staticAnalyse;
+      bool optimization;
 
       // -------------------- It represents the program => It's the first visitor
       virtual antlrcpp::Any visitProg(Grammar4Parser::ProgContext *ctx) override
@@ -484,6 +485,16 @@ class Visitor : public Grammar4BaseVisitor
             // -------------------- The expression contained in par
             Expression *expression = (Expression *)visit(ctx->expr());
 
+            if (optimization)
+            {
+                  ExpressionConst *exprCst = dynamic_cast<ExpressionConst *>(expression);
+
+                  if (exprCst != nullptr)
+                  {
+                        return (Expression *)exprCst;
+                  }
+            }
+
             return (Expression *)new ExpressionPar(INT, expression);
       }
 
@@ -499,10 +510,30 @@ class Visitor : public Grammar4BaseVisitor
             // -------------------- building the expression Plus or Minus
             if (ctx->PLUSMINUS()->getText().compare("+") == 0)
             {
+                  if (optimization)
+                  {
+                        ExpressionConst *exprCstLeft = dynamic_cast<ExpressionConst *>(left);
+                        ExpressionConst *exprCstRight = dynamic_cast<ExpressionConst *>(right);
+
+                        if (exprCstLeft != nullptr && exprCstRight)
+                        {
+                              return (Expression *) new ExpressionConst(INT, exprCstLeft->value + exprCstRight->value);
+                        }
+                  }
                   return (Expression *)new ExpressionPlus(INT, left, right);
             }
             else
             {
+                  if (optimization)
+                  {
+                        ExpressionConst *exprCstLeft = dynamic_cast<ExpressionConst *>(left);
+                        ExpressionConst *exprCstRight = dynamic_cast<ExpressionConst *>(right);
+
+                        if (exprCstLeft != nullptr && exprCstRight)
+                        {
+                              return (Expression *) new ExpressionConst(INT, exprCstLeft->value - exprCstRight->value);
+                        }
+                  }
                   return (Expression *)new ExpressionMinus(INT, left, right);
             }
       }
@@ -515,6 +546,17 @@ class Visitor : public Grammar4BaseVisitor
 
             // -------------------- Right operand
             Expression *right = (Expression *)visit(ctx->expr(1));
+
+            if (optimization)
+                  {
+                        ExpressionConst *exprCstLeft = dynamic_cast<ExpressionConst *>(left);
+                        ExpressionConst *exprCstRight = dynamic_cast<ExpressionConst *>(right);
+
+                        if (exprCstLeft != nullptr && exprCstRight)
+                        {
+                              return (Expression *) new ExpressionConst(INT, exprCstLeft->value * exprCstRight->value);
+                        }
+                  }
 
             return (Expression *)new ExpressionMult(INT, left, right);
       }

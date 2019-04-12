@@ -1,27 +1,5 @@
-int diff(int x, int y){
-      return x - y;     
-}
-
-int min(int x, int y){
-      if(x < y){
-            return x;
-      } else {
-            return y;
-      }
-}
-
-int fact(int x){
-      int res = 1;
-      if(x != 0){
-            res = fact(x - 1) * x;
-      }
-      return res;
-}
-
 int main(){
       int a = 3, b = 4;
-      int z = fact(a);
+      int z = (3*4*2)*b - (2+2+2);
       return z;
 }
-
-
