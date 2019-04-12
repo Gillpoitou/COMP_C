@@ -2,5 +2,5 @@
 
 dossier="Sprint$1"
 
-echo "$($dossier/compilo $dossier/$dossier/prog.txt -c $dossier/prog.s -a -s -o)"
+echo "$($dossier/compilo $dossier/Test/ValidPrograms/If.c -c $dossier/prog.s -a -s -o)"
 
