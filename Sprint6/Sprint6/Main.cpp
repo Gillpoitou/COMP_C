@@ -38,9 +38,9 @@ int main(int argc, char *argv[])
             Prog* result = (Prog *)visitor.visit(tree);
             // cout << "3" << endl;
             //int resultat = (int)visitor.visit(tree);
-            cout << "Résultat " << result->toString() << endl;
+            //cout << "Résultat " << result->toString() << endl;
             result->build_ASM(asmFile);
-            cout << "build success ASM generated" << endl;
+            //cout << "build success ASM generated" << endl;
       }
 
       else
