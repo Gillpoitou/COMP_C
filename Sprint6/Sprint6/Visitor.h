@@ -23,7 +23,6 @@ class Visitor : public Grammar4BaseVisitor
       // -------------------- It represents the program => It's the first visitor
       virtual antlrcpp::Any visitProg(Grammar4Parser::ProgContext *ctx) override
       {
-            //cout << "2.1" << endl;
 
             //Creating the symbolTable
             if (staticAnalyse)
@@ -41,11 +40,8 @@ class Visitor : public Grammar4BaseVisitor
                   funcList->insert(pair<string, Function *>(f->name, f));
             }
 
-            //cout << "2.2" << endl;
-
             // -------------------- Main Function
             Function *mainf = (Function *)visit(ctx->main());
-            //cout << "2.3" << endl;
             funcList->insert(pair<string, Function *>(mainf->name, mainf));
 
             return (Prog *)new Prog(funcList);
@@ -54,7 +50,6 @@ class Visitor : public Grammar4BaseVisitor
       // -------------------- Function Main definition => type is INT and 0 params possible
       virtual antlrcpp::Any visitMain(Grammar4Parser::MainContext *ctx) override
       {
-            //cout << "2.2.1" << endl;
 
             // -------------------- Type = INT
             Type rtype = INT;
@@ -83,8 +78,6 @@ class Visitor : public Grammar4BaseVisitor
                   }
             }
 
-            //cout << "2.2.2" << endl;
-
             // -------------------- Statements
             Statement *stat;
             vector<Statement *> *statList = new vector<Statement *>(0);
@@ -94,15 +87,8 @@ class Visitor : public Grammar4BaseVisitor
                   statList->push_back(stat);
             }
 
-            //cout << "2.2.3" << endl;
-
             // -------------------- Statement Return => it exisits
             StatementReturn *rstat = (StatementReturn *)visit(ctx->rstat());
-            /*if (staticAnalyse && rstat->value->type != rtype)
-            {
-                  cerr << "Return type of " << name << " function does not match with return statement" << endl;
-                  exit(1);
-            }*/
 
             if (staticAnalyse)
             {
@@ -115,7 +101,6 @@ class Visitor : public Grammar4BaseVisitor
       // -------------------- Function Definition
       virtual antlrcpp::Any visitFuncdef(Grammar4Parser::FuncdefContext *ctx) override
       {
-            //cout << "2.1.1" << endl;
 
             // -------------------- Type
             Type rtype = (Type)visit(ctx->rtype());
@@ -136,8 +121,6 @@ class Visitor : public Grammar4BaseVisitor
                   paramsList = visit(ctx->dparams());
             }
 
-            //cout << "2.1.2" << endl;
-
             // -------------------- Declarations
             vector<Declaration *> *declSubList;
             vector<Declaration *> *declList = new vector<Declaration *>(0);
@@ -149,7 +132,6 @@ class Visitor : public Grammar4BaseVisitor
                         declList->push_back(decl);
                   }
             }
-            //cout << "2.1.3" << endl;
 
             /// -------------------- Statements
             Statement *stat;
@@ -159,8 +141,6 @@ class Visitor : public Grammar4BaseVisitor
                   stat = (Statement *)visit(ctx->stat(i));
                   statList->push_back(stat);
             }
-
-            //cout << "2.1.4" << endl;
 
             // -------------------- Statement Return
             StatementReturn *rstat = nullptr;
@@ -173,8 +153,6 @@ class Visitor : public Grammar4BaseVisitor
                         exit(1);
                   }
             }
-
-            //cout << "2.1.5" << endl;
 
             Function *function = new Function(rtype, name, paramsList, declList, statList, rstat);
 
@@ -193,7 +171,7 @@ class Visitor : public Grammar4BaseVisitor
             string name = ctx->ID()->getText().c_str();
 
             // -------------------- Type of the called function
-            Type type = INT; //TODO: modif
+            Type type = INT;
             if (staticAnalyse)
             {
                   Symbol *functionSymbol = symbolTable->getSymbol(name);
@@ -241,7 +219,6 @@ class Visitor : public Grammar4BaseVisitor
       virtual antlrcpp::Any visitDparams(Grammar4Parser::DparamsContext *ctx) override
       {
             // -------------------- Other params
-            //cout << "2.1.1.1" << endl;
             vector<ExpressionVar *> *paramsList;
             if (ctx->dparams())
             {
@@ -252,12 +229,8 @@ class Visitor : public Grammar4BaseVisitor
                   paramsList = new vector<ExpressionVar *>(0);
             }
 
-            //cout << "2.1.1.2" << endl;
-
             // -------------------- New param
             ExpressionVar *expr = (ExpressionVar *)visit(ctx->dparam());
-
-            //cout << "2.1.1.3" << endl;
 
             paramsList->insert(paramsList->begin(), expr);
             return (vector<ExpressionVar *> *)paramsList;
@@ -305,15 +278,12 @@ class Visitor : public Grammar4BaseVisitor
       // -------------------- Declarations of variables
       virtual antlrcpp::Any visitDeclaration(Grammar4Parser::DeclarationContext *ctx) override
       {
-            //cout << "2.2.1.1" << endl;
 
             // -------------------- Type
             Type type = (Type)visit(ctx->type());
-            //cout << "2.2.1.2" << endl;
 
             // -------------------- All declarations
             vector<Declaration *> *decls = (vector<Declaration *> *)visit(ctx->variables());
-            //cout << "2.2.1.3" << endl;
 
             // -------------------- Give type to all declarations
             for (Declaration *d : *decls)
@@ -325,7 +295,6 @@ class Visitor : public Grammar4BaseVisitor
                         exit(1);
                   }
             }
-            //cout << "2.2.1.4" << endl;
 
             return (vector<Declaration *> *)decls;
       }
@@ -333,8 +302,6 @@ class Visitor : public Grammar4BaseVisitor
       // -------------------- List of variables in a declaration
       virtual antlrcpp::Any visitVariables(Grammar4Parser::VariablesContext *ctx) override
       {
-            //cout << "2.2.1.2.1" << endl;
-
             // -------------------- Other variables
             vector<Declaration *> *decls;
             if (ctx->variables())
@@ -345,14 +312,11 @@ class Visitor : public Grammar4BaseVisitor
             {
                   decls = new vector<Declaration *>(0);
             }
-            //cout << "2.2.1.2.2" << endl;
 
             // -------------------- New variable
             Declaration *d = (Declaration *)visit(ctx->variable());
-            //cout << "2.2.1.2.3" << endl;
 
             decls->insert(decls->begin(), d);
-            //cout << "2.2.1.2.4" << endl;
 
             return (vector<Declaration *> *)decls;
       }
@@ -369,18 +333,13 @@ class Visitor : public Grammar4BaseVisitor
       // -------------------- Variable declaration with initialisation
       virtual antlrcpp::Any visitInit(Grammar4Parser::InitContext *ctx) override
       {
-            //cout << "2.2.1.2.2.1" << endl;
 
             // -------------------- New variable
             ExpressionVar *left = new ExpressionVar(ctx->ID()->getText().c_str());
-            //cout << "2.2.1.2.2.2" << endl;
-
             // -------------------- Value assigned to new variable
             Expression *right = visit(ctx->expr());
-            //cout << "2.2.1.2.2.3" << endl;
 
             Declaration *declaration = new Declaration(left, right);
-            //cout << "2.2.1.2.2.4" << endl;
 
             return (Declaration *)declaration;
       }
@@ -419,14 +378,10 @@ class Visitor : public Grammar4BaseVisitor
       // -------------------- Statement to call a function without catching the returned value
       virtual antlrcpp::Any visitCallnr(Grammar4Parser::CallnrContext *ctx) override
       {
-            //cout << "2.2.2.1" << endl;
 
             // -------------------- Function called
             ExpressionCall *expr = (ExpressionCall *)visit(ctx->fncall());
-            //cout << "2.2.2.2" << endl;
-
             StatementFunction *statement = new StatementFunction(expr);
-            //cout << "2.2.2.3" << endl;
             return (Statement *)statement;
       }
 
@@ -530,12 +485,9 @@ class Visitor : public Grammar4BaseVisitor
       // -------------------- Function call with value catching (as an expression)
       virtual antlrcpp::Any visitCallr(Grammar4Parser::CallrContext *ctx) override
       {
-            //cout << "2.2.1.2.2.2.1" << endl;
 
             // -------------------- The called function
             Expression *expr = (ExpressionCall *)visit(ctx->fncall());
-            //cout << "2.2.1.2.2.2.2" << endl;
-
             return (Expression *)expr;
       }
 
@@ -557,19 +509,15 @@ class Visitor : public Grammar4BaseVisitor
       virtual antlrcpp::Any visitVar(Grammar4Parser::VarContext *ctx) override
       {
             string name = ctx->ID()->getText().c_str();
-            //cout << "2.1.4.1" << endl;
             if (staticAnalyse)
             {
                   Symbol *var = symbolTable->getSymbol(name);
-                  //cout << "2.1.4.2" << endl;
                   if (var == nullptr)
                   {
                         cerr << "Variable " << name << " does not exists" << endl;
                         exit(1);
                   }
             }
-
-            //cout << "2.1.4.3" << endl;
             return (Expression *)new ExpressionVar(name);
       }
 

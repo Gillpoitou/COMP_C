@@ -69,7 +69,6 @@ int main(int argc, char *argv[])
                         {
                               optionsValues[COMPILO] = true;
                               inputFilename = argv[++i];
-                              // cout << "input filename : " << inputFilename << endl;
                         }
                         else
                         {
@@ -83,7 +82,6 @@ int main(int argc, char *argv[])
                         {
                               optionsValues[ASM] = true;
                               outputFilename = argv[++i];
-                              // cout << "output filename : " << outputFilename << endl;
                         }
                         else
                         {
@@ -94,18 +92,15 @@ int main(int argc, char *argv[])
                   else if (optionsNames[OPT].compare(argv[i]) == 0)
                   {
                         optionsValues[OPT] = true;
-                        // cout << "OPT" << endl;
                         cout << "Optimization is not implemented : ignored" << endl;
                   }
                   else if (optionsNames[STATIC_ANALYSE].compare(argv[i]) == 0)
                   {
                         optionsValues[STATIC_ANALYSE] = true;
-                        // cout << "STATIC" << endl;
                   }
                   else if (optionsNames[AST].compare(argv[i]) == 0)
                   {
                         optionsValues[AST] = true;
-                        // cout << "AST" << endl;
                   }
             }
       }
