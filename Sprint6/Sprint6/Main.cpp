@@ -133,7 +133,7 @@ int main(int argc, char *argv[])
       tree::ParseTree *tree = parser.prog();
 
       //Visitor & AST
-      Visitor visitor(optionsValues[STATIC_ANALYSE]);
+      Visitor visitor(optionsValues[STATIC_ANALYSE], optionsValues[OPT]);
       Prog *result = (Prog *)visitor.visit(tree);
 
       // Print AST
