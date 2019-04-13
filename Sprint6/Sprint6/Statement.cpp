@@ -154,6 +154,12 @@ string StatementWhile::build_IR(CFG *ir_cfg)
       BasicBlock* conditionBB = new BasicBlock(ir_cfg,ir_cfg->new_BB_name());
       ir_cfg->add_bb(conditionBB);
 
+			BasicBlock* loopBB = new BasicBlock(ir_cfg,ir_cfg->new_BB_name());
+      ir_cfg->add_bb(loopBB);
+      conditionBB->exit_true = loopBB;
+      conditionBB->exit_false = afterWhileBB;
+      loopBB->exit_true = conditionBB;
+
       ir_cfg->current_bb->exit_true = conditionBB;
       ir_cfg->current_bb = conditionBB;
 
@@ -161,12 +167,6 @@ string StatementWhile::build_IR(CFG *ir_cfg)
 			vector<string> params;
 			params.push_back(conditionVar);
 			ir_cfg->current_bb->add_IRInstr(IRInstr::Operation::eq_if, INT, params);
-
-      BasicBlock* loopBB = new BasicBlock(ir_cfg,ir_cfg->new_BB_name());
-      ir_cfg->add_bb(loopBB);
-      conditionBB->exit_true = loopBB;
-      conditionBB->exit_false = afterWhileBB;
-      loopBB->exit_true = conditionBB;
 
       ir_cfg->current_bb = loopBB;
       block->build_IR(ir_cfg);

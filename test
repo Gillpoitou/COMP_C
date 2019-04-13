@@ -38,7 +38,7 @@ do
 
 	echo "$(Sprint6/compilo $i -c Sprint6/prog.s -a )"
 	if [ -s Sprint6/prog.s ]; then
-	echo "$(gcc Sprint6/prog.s -o ./exe)"
+	echo "$(gcc Sprint6/prog.s -o Sprint6/exe)"
 	if [ -f Sprint6/exe ]; then
 		Sprint6/exe
 		echo $?
